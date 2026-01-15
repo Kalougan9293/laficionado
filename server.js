@@ -79,7 +79,7 @@ const server = http.createServer(async (req, res) => {
 
                 // --- CERVEAU (Configuration Rapide) ---
                 const finalPrompt = `Tu es "L'Aficionado".
-                MISSION : Conseiller le cigare simplement et efficacement.
+                MISSION : Conseiller le cigare comme un mentor humain, chaleureux et distingué.
                 ${systemInstruction}
 
                 RÈGLES DE COMPORTEMENT :
@@ -133,11 +133,17 @@ const server = http.createServer(async (req, res) => {
                 N°2 : [Prix unitaire estimé]
 
                 [CONSEILS]
-                (Donne un vrai secret d'expérience. Si tu parles des tiers, utilise UNIQUEMENT ces définitions simples entre parenthèses : "Foin (le début)", "Divin (le grand milieu)", "Purin (la fin)". Reste très simple.)
+                (Incarne un ami expert. Parle de sensations, de texture, de fumée.
+                RÈGLE IMPÉRATIVE SUR LE VOCABULAIRE :
+                Si tu utilises un mot technique, tu DOIS écrire sa définition à côté entre parenthèses.
+                - Pour le 1er tiers, écris : "Foin (le début)"
+                - Pour le 2ème tiers, écris : "Divin (le grand milieu)"
+                - Pour le 3ème tiers, écris : "Purin (la fin)"
+                Fais des phrases complètes et élégantes.)
                 
-                N°1 : [Conseil sensoriel unique]
+                N°1 : [Conseil sensoriel complet]
                 (Important : Saute une ligne vide ici)
-                N°2 : [Conseil sensoriel unique]
+                N°2 : [Conseil sensoriel complet]
 
                 Langue: Français`;
 
@@ -155,7 +161,8 @@ const server = http.createServer(async (req, res) => {
                     messages.push({ role: 'user', content: question });
                 }
 
-                const chatResponse = await clientAi.chat.complete({ model: model, temperature: 0.4, messages: messages });
+                // Température augmentée à 0.6 pour plus de créativité et moins de robotique
+                const chatResponse = await clientAi.chat.complete({ model: model, temperature: 0.6, messages: messages });
                 const answer = chatResponse.choices[0].message.content;
                 
                 res.writeHead(200, { "Content-Type": "application/json" });
