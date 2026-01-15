@@ -133,17 +133,14 @@ const server = http.createServer(async (req, res) => {
                 N°2 : [Prix unitaire estimé]
 
                 [CONSEILS]
-                (Incarne un ami expert. Parle de sensations, de texture, de fumée.
-                RÈGLE IMPÉRATIVE SUR LE VOCABULAIRE :
-                Si tu utilises un mot technique, tu DOIS écrire sa définition à côté entre parenthèses.
-                - Pour le 1er tiers, écris : "Foin (le début)"
-                - Pour le 2ème tiers, écris : "Divin (le grand milieu)"
-                - Pour le 3ème tiers, écris : "Purin (la fin)"
-                Fais des phrases complètes et élégantes.)
+                (Donne UNE seule astuce d'expert marquante par cigare. Ne décris pas tout le parcours.
+                Choisis un angle : l'allumage, la cendre, la rétro-olfaction, ou un moment clé.
+                VOCABULAIRE : Si et seulement si tu parles d'une étape, utilise : "Foin (le début)", "Divin (le grand milieu)" ou "Purin (la fin)".
+                Sois concis, impactant et élégant.)
                 
-                N°1 : [Conseil sensoriel complet]
+                N°1 : [Conseil expert ciblé]
                 (Important : Saute une ligne vide ici)
-                N°2 : [Conseil sensoriel complet]
+                N°2 : [Conseil expert ciblé]
 
                 Langue: Français`;
 
@@ -161,7 +158,6 @@ const server = http.createServer(async (req, res) => {
                     messages.push({ role: 'user', content: question });
                 }
 
-                // Température augmentée à 0.6 pour plus de créativité et moins de robotique
                 const chatResponse = await clientAi.chat.complete({ model: model, temperature: 0.6, messages: messages });
                 const answer = chatResponse.choices[0].message.content;
                 
