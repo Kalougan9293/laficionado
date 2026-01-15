@@ -8,12 +8,21 @@ const path = require("path");
 
 const clientAi = new Mistral({apiKey: process.env.MISTRAL_API_KEY});
 
-// --- LOGS ---
+// --- LOGS (CORRECTION CRASH RENDER) ---
 function logActivity(clientName, message) {
+    // SÉCURITÉ : On vérifie si le dossier 'logs' existe, sinon on le crée
+    const logDir = path.join(__dirname, 'logs');
+    if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir, { recursive: true });
+    }
+
     const safeName = clientName ? clientName.replace(/[^a-z0-9]/gi, '_') : 'GENERAL_PUBLIC'; 
-    const logFile = path.join(__dirname, 'logs', `${safeName}_activity.txt`);
+    const logFile = path.join(logDir, `${safeName}_activity.txt`);
     const line = `[${new Date().toLocaleString()}] ${message}\n`;
-    fs.appendFile(logFile, line, (err) => { if (err) console.error("Erreur log:", err); });
+    
+    fs.appendFile(logFile, line, (err) => { 
+        if (err) console.error("Erreur log:", err); 
+    });
 }
 
 const server = http.createServer(async (req, res) => {
@@ -70,7 +79,7 @@ const server = http.createServer(async (req, res) => {
 
                 // --- CERVEAU (Configuration Rapide) ---
                 const finalPrompt = `Tu es "L'Aficionado".
-                MISSION : Conseiller le cigare comme un mentor humain, chaleureux et distingué.
+                MISSION : Conseiller le cigare simplement et efficacement.
                 ${systemInstruction}
 
                 RÈGLES DE COMPORTEMENT :
@@ -124,7 +133,7 @@ const server = http.createServer(async (req, res) => {
                 N°2 : [Prix unitaire estimé]
 
                 [CONSEILS]
-                (Donne un vrai secret d'expérience : rythme, rétro-olfaction, texture. Si tu parles des tiers, utilise UNIQUEMENT ces définitions simples entre parenthèses juste après le mot : "Foin (le début)", "Divin (le grand milieu)", "Purin (la fin)". Reste simple.)
+                (Donne un vrai secret d'expérience. Si tu parles des tiers, utilise UNIQUEMENT ces définitions simples entre parenthèses : "Foin (le début)", "Divin (le grand milieu)", "Purin (la fin)". Reste très simple.)
                 
                 N°1 : [Conseil sensoriel unique]
                 (Important : Saute une ligne vide ici)
@@ -146,7 +155,7 @@ const server = http.createServer(async (req, res) => {
                     messages.push({ role: 'user', content: question });
                 }
 
-                const chatResponse = await clientAi.chat.complete({ model: model, temperature: 0.5, messages: messages });
+                const chatResponse = await clientAi.chat.complete({ model: model, temperature: 0.4, messages: messages });
                 const answer = chatResponse.choices[0].message.content;
                 
                 res.writeHead(200, { "Content-Type": "application/json" });
