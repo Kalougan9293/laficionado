@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H5J9RYBSZL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-H5J9RYBSZL');
+    </script>
+
+    <meta name="description" content="L'Aficionado : Votre expert cigare personnel par IA.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>L'Aficionado - Expert Cigare</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍂</text></svg>">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Cinzel:wght@400;700&family=Montserrat:wght@400;600&display=swap');
+        
+        body { transition: background 0.5s ease; font-family: 'Playfair Display', serif; }
+        body.theme-cigar { background: radial-gradient(circle at top, #3e2723 0%, #0f0500 100%); }
+        body.theme-dark { background: radial-gradient(circle at top, #1a1a1a 0%, #000000 100%); }
+        
+        .gold-gradient { background: linear-gradient(to right, #d4af37, #fcf6ba, #b8860b, #fbf5b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Cinzel', serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); }
+        .gold-btn { background: linear-gradient(to bottom, #b8860b, #8a6e2f); box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid #ffd700; color: #fff; transition: all 0.3s ease; }
+        .gold-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(184, 134, 11, 0.6); }
+        .gold-btn.minimized { padding-top: 0.5rem; padding-bottom: 0.5rem; flex-direction: row; height: 3.5rem; gap: 1rem; }
+        
+        .avatar-wrapper { position: relative; width: 11rem; height: 11rem; margin: 0 auto; transition: transform 0.3s; cursor: pointer; z-index: 10; }
+        .avatar-wrapper:hover { transform: scale(1.02); }
+        .avatar-circle { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #d4af37; overflow: hidden; position: relative; z-index: 20; background: #2a1810; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); }
+        .avatar-banner { position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%); width: 140%; background: linear-gradient(to right, #2a0a0a, #4a1a1a, #2a0a0a); padding: 0.4rem 0; border: 1px solid #d4af37; border-radius: 4px; z-index: 30; box-shadow: 0 5px 15px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; }
+        
+        .pulse-gold { animation: pulseAura 2s infinite; }
+        @keyframes pulseAura { 0%, 100% { box-shadow: 0 0 20px rgba(184, 134, 11, 0.2); border-color: #8a6e2f; } 50% { box-shadow: 0 0 60px rgba(212, 175, 55, 0.6); border-color: #ffd700; } }
+
+        /* --- LOADER CIGARE ANIMÉ --- */
+        .cigar-loader-container { position: relative; width: 220px; height: 100px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .cigar-body-anim { position: relative; width: 160px; height: 36px; background: linear-gradient(to bottom, #5d4037, #3e2723 60%, #2a1810); border-radius: 4px 18px 18px 4px; border-bottom: 3px solid #1a0a05; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
+        .cigar-body-anim::before { content: ''; position: absolute; left: 25px; top: -1px; bottom: -1px; width: 32px; background: linear-gradient(to right, #b8860b, #d4af37, #b8860b); border-left: 2px solid #ffd700; border-right: 2px solid #ffd700; }
+        .cigar-burn-anim { position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; background: radial-gradient(circle, #ff4500 10%, #ff8c00 40%, #3e2723 90%); border-radius: 50%; box-shadow: 0 0 10px #ff4500, 0 0 25px #ff8c00, 0 0 40px rgba(212, 175, 55, 0.5); animation: burnPulse 1.8s infinite ease-in-out alternate; }
+        @keyframes burnPulse { 0% { opacity: 0.8; transform: translateY(-50%) scale(0.9); filter: brightness(1); } 100% { opacity: 1; transform: translateY(-50%) scale(1.1); filter: brightness(1.4); box-shadow: 0 0 25px #ff4500, 0 0 50px #ffd700, 0 0 80px rgba(212, 175, 55, 0.9); } }
+        .smoke-rise { position: absolute; right: 10px; top: -15px; background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; width: 25px; height: 25px; opacity: 0; animation: smokeUpAnim 2.5s infinite ease-out; }
+        .s1 { animation-delay: 0s; } .s2 { animation-delay: 0.8s; } .s3 { animation-delay: 1.6s; }
+        @keyframes smokeUpAnim { 0% { opacity: 0; transform: translateY(0) scale(0.5) translateX(0) rotate(0deg); } 30% { opacity: 0.5; } 100% { opacity: 0; transform: translateY(-120px) scale(4) translateX(-30px) rotate(90deg); } }
+
+        /* UI ELEMENTS */
+        #response-card { max-height: 0; overflow: hidden; transition: max-height 0.8s ease-out, opacity 0.5s ease; opacity: 0; }
+        #response-card.visible { max-height: 5000px; opacity: 1; }
+        .fade-in-line { animation: fadeIn 0.6s ease forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        
+        .tag-btn { font-size: 0.75rem; padding: 0.5rem 1rem; border: 1px solid #5d4037; border-radius: 4px; background: #fffcf5; color: #3e2723; cursor: pointer; transition: all 0.2s; font-family: 'Montserrat', sans-serif; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tag-btn:hover { background: #3e2723; color: #d4af37; border-color: #d4af37; }
+        
+        .switch-btn { background: #3e2723; border: 1px solid #d4af37; color: #d4af37; font-size: 0.7rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 2px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; cursor: pointer; }
+        .switch-btn:hover { background: #d4af37; color: #1a0500; }
+        
+        #history-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #2a1810; margin-top: 10px; border-radius: 8px; color: #e5e7eb; border: 1px solid #5d4037; }
+        #history-panel.open { max-height: 250px; padding: 10px; overflow-y: auto; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #3e2723; cursor: pointer; font-size: 0.8rem; }
+        .history-item:hover { background: #3e2723; }
+        #search-bar { background: #fffcf5; border: 2px solid #5d4037; color: #3e2723; }
+        #search-bar::placeholder { color: #8d6e63; font-style: italic; }
+        
+        .flame-icon { width: 18px; height: 18px; display: inline-block; margin-right: 2px; }
+        .flame-filled { color: #d4af37; fill: #d4af37; }
+        .flame-empty { color: #d4af37; fill: none; stroke: #d4af37; stroke-width: 1.5; opacity: 0.4; }
+    </style>
+</head>
+<body class="theme-cigar text-gray-100 min-h-screen flex flex-col items-center p-6 text-center relative overflow-x-hidden">
+
+    <div class="absolute top-6 left-6 z-50">
+        <button class="w-10 h-10 rounded-full border border-[#d4af37] bg-black/40 flex items-center justify-center text-xl hover:bg-[#d4af37]/20 transition-colors">🇫🇷</button>
+    </div>
+
+    <div class="absolute top-6 right-6 z-50">
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-[#d4af37] text-[#d4af37] bg-black/40 flex items-center justify-center hover:bg-[#d4af37] hover:text-black transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>
+        </button>
+    </div>
+
+    <header class="mt-8 mb-8 relative px-4 w-full max-w-2xl">
+        <h1 id="main-title" class="text-5xl font-bold gold-gradient uppercase tracking-[0.1em] mb-2 leading-tight drop-shadow-lg">L'Aficionado</h1>
+        <p id="subtitle" class="text-xs text-[#d4af37] font-bold tracking-[0.3em] uppercase border-t border-b border-[#d4af37]/30 py-2 inline-block">Cigares & Spiritueux</p>
+        <p id="tagline" class="text-lg text-gray-200 font-light tracking-widest mt-4 italic opacity-90 font-serif">Le cigare, dégusté avec l’élégance du savoir.</p>
+    </header>
+
+    <div class="mb-10 relative group z-30">
+        <div id="bubble" class="opacity-0 absolute -top-16 left-1/2 transform -translate-x-1/2 bg-[#fffcf5] text-[#3e2723] px-4 py-2 rounded shadow-xl text-sm font-serif border border-[#d4af37] w-64 z-40 transition-all duration-300 pointer-events-none">
+            Quel est votre désir aujourd'hui ?
+            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#fffcf5] rotate-45 border-b border-r border-[#d4af37]"></div>
+        </div>
+
+        <div class="avatar-wrapper" onclick="handleAvatarClick()">
+            <div id="avatar-circle" class="avatar-circle flex items-center justify-center bg-black">
+                <img src="cigare.png" alt="Aficionado" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity scale-105">
+            </div>
+            <div class="avatar-banner">
+                <span class="text-[#d4af37] text-[10px] font-bold uppercase tracking-[0.25em] whitespace-nowrap">Expert Privé</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full max-w-lg bg-[#fffcf5] rounded-xl px-6 pt-8 pb-4 shadow-2xl text-gray-800 relative z-20 border-t-4 border-[#d4af37]">
+        
+        <div class="relative mb-4">
+            <input type="text" id="search-bar" class="w-full rounded-lg p-4 pr-12 focus:outline-none text-lg font-serif placeholder-opacity-50 shadow-inner" placeholder="Ex: Cigare doux pour débutant...">
+            <div id="clear-btn" onclick="clearInput()" class="absolute right-12 top-4 cursor-pointer text-gray-400 hover:text-[#3e2723] hidden font-bold text-xl px-2">✕</div>
+            <div onclick="demanderIA()" class="absolute right-4 top-4 cursor-pointer text-[#3e2723] hover:text-[#d4af37] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>
+            </div>
+        </div>
+
+        <div id="quick-actions" class="flex flex-col gap-2 mb-6 px-1 transition-opacity duration-300"></div>
+        <div id="history-panel" class="text-left hidden mb-4"></div>
+
+        <div id="loader" class="hidden flex-col items-center py-8 mb-6 h-auto relative justify-center transition-all duration-300">
+            <div class="cigar-loader-container">
+                <div class="cigar-body-anim">
+                    <div class="cigar-burn-anim"></div>
+                </div>
+                <div class="smoke-rise s1"></div>
+                <div class="smoke-rise s2"></div>
+                <div class="smoke-rise s3"></div>
+            </div>
+        </div>
+
+        <label id="photo-btn" class="gold-btn w-full py-4 rounded-lg flex flex-col items-center justify-center gap-1 active:scale-95 cursor-pointer relative overflow-hidden">
+            <div class="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors"></div>
+            <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <span id="photo-label" class="text-white font-bold text-lg uppercase tracking-wider relative z-10 font-serif">Analyser une Bague</span>
+        </label>
+
+        <div id="response-card" class="text-left border-t border-[#3e2723]/5 pt-2 space-y-4 mt-2">
+            <div id="response-content"></div>
+            <a id="buy-link" href="#" target="_blank" class="hidden block text-center py-4 px-4 mt-6 bg-[#3e2723] text-[#d4af37] rounded border border-[#d4af37] font-bold text-sm uppercase shadow-lg hover:bg-black transition-colors">Trouver ce cigare</a>
+            <div id="switch-buttons" class="hidden flex-wrap gap-2 justify-center mt-4 pt-4 border-t border-gray-200/50">
+                <button onclick="relancerIA('similaire')" class="switch-btn">♻️ Similaire</button>
+                <button onclick="relancerIA('plus_doux')" class="switch-btn">☁️ Plus Doux</button>
+                <button onclick="relancerIA('plus_fort')" class="switch-btn">🔥 Plus Fort</button>
+            </div>
+            
+            <div id="feedback-container" class="hidden flex flex-col items-center mt-4">
+                <p class="text-[10px] text-gray-400 italic mb-2 uppercase tracking-widest">Conseil pertinent ?</p>
+                <div class="flex gap-8 items-end">
+                    <button onclick="sendFeedback('down')" id="btn-down" class="text-lg opacity-60 hover:opacity-100 transition-all" title="Pas pertinent">🥀</button>
+                    <button onclick="sendFeedback('up')" id="btn-up" class="text-3xl opacity-100 hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]" title="Pertinent">🌹</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto w-full pb-6 flex flex-col items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
+        <p class="text-[#d4af37] text-xl font-light italic font-serif mb-4 mt-8">"Fumer est un vice, l'apprécier est un art."</p>
+        <p class="text-white/20 text-[9px] uppercase tracking-widest font-sans">© 2026 L'Aficionado. TOUS DROITS RESERVES <br>Fumer nuit gravement à la santé.</p>
+        <div class="flex justify-center gap-6 text-[10px] text-[#d4af37]/30 tracking-widest font-sans lowercase">
+            <button onclick="toggleLegalModal()" class="hover:text-white border-b border-transparent hover:border-[#d4af37] transition-all">mentions légales</button>
+            <a href="mailto:contact@laficionado.com" class="hover:text-white border-b border-transparent hover:border-[#d4af37] transition-all">contact</a>
+        </div>
+    </footer>
+
+    <div id="legal-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#2a1810] border border-[#d4af37] rounded-xl p-6 max-w-sm w-full relative shadow-2xl text-left">
+            <button onclick="toggleLegalModal()" class="absolute top-3 right-4 text-[#d4af37] text-xl hover:text-white">&times;</button>
+            <h3 class="text-[#d4af37] font-bold text-center uppercase tracking-widest mb-6 font-serif border-b border-[#d4af37]/30 pb-2">Mentions Légales</h3>
+            <div class="space-y-4 text-xs text-gray-300 font-sans">
+                <div><p class="text-[#d4af37] font-bold uppercase mb-1">Éditeur</p><p>Votre Nom / Société</p><p>Adresse Complète</p></div>
+                <div><p class="text-[#d4af37] font-bold uppercase mb-1">Contact</p><a href="mailto:contact@laficionado.com" class="underline hover:text-white">contact@laficionado.com</a></div>
+                <div><p class="text-[#d4af37] font-bold uppercase mb-1">Hébergement</p><p>Render</p></div>
+                <div class="pt-2 border-t border-[#d4af37]/30"><p class="italic text-[10px] opacity-70">Ce site utilise Google Analytics à des fins de mesure d'audience anonyme.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('search-bar');
+        const clearBtn = document.getElementById('clear-btn');
+        const card = document.getElementById('response-card');
+        const contentArea = document.getElementById('response-content');
+        const loader = document.getElementById('loader');
+        const avatarCircle = document.getElementById('avatar-circle');
+        const buyLink = document.getElementById('buy-link');
+        const switchButtons = document.getElementById('switch-buttons');
+        const bubble = document.getElementById('bubble');
+        const photoBtn = document.getElementById('photo-btn');
+        const historyPanel = document.getElementById('history-panel');
+        const quickActions = document.getElementById('quick-actions');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const legalModal = document.getElementById('legal-modal');
+        
+        let currentLang = 'fr';
+        let currentSession = [];
+        let currentCigarName = "";
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientName = urlParams.get('client');
+
+        const langData = {
+            fr: {
+                phrases: ["Cigare pour débutant", "Un Cubain intense", "Pour accompagner un Rhum", "Cigare rapide (30min)"],
+                quick_actions: [ 
+                    { text: "Cigare Doux (Débutant) ☁️", label: "☁️ Doux / Débutant" }, 
+                    { text: "Surprends-moi avec un cigare d'exception", label: "🎲 Surprenez-moi" }, 
+                    { text: "Court (Pause Café) ☕", label: "☕ Rapide (30min)" } 
+                ],
+                sections: { 
+                    '[DEMANDE]': 'Votre Demande', 
+                    '[SUGGESTION]': 'Notre Suggestion',
+                    '[EXPLICATION]': "L'Explication", 
+                    '[AROMES]': "Les Arômes", 
+                    '[DUREE]': 'Durée',
+                    '[PUISSANCE]': 'Puissance', 
+                    '[MOMENT]': 'Le Moment Idéal',
+                    '[ACCORDS]': 'Accord Idéal', 
+                    '[PRIX]': 'Prix Estimé', 
+                    '[CONSEILS]': 'Les Conseils du Maitre' 
+                }
+            }
+        };
+
+        function renderQuickActions() {
+            const actions = langData.fr.quick_actions;
+            let html = `<div class="flex w-full gap-2 flex-wrap">`;
+            // CORRECTION ICI POUR LE BUG "Surprends-moi" (Apostrophe)
+            actions.forEach(action => { html += `<button onclick="quickAction('${action.text.replace(/'/g, "\\'")}')" class="tag-btn flex-1 text-center justify-center">${action.label}</button>`; });
+            html += `</div><div class="w-full"><button onclick="toggleHistory()" class="tag-btn w-full justify-center bg-[#2a1810] text-[#d4af37] border-[#d4af37]">📜 Mes Dégustations</button></div>`;
+            quickActions.innerHTML = html;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('theme-cigar');
+            document.body.classList.toggle('theme-dark');
+        }
+        function toggleLegalModal() { legalModal.classList.toggle('hidden'); }
+        function handleAvatarClick() {
+            bubble.classList.remove('opacity-0');
+            setTimeout(() => bubble.classList.add('opacity-0'), 3000);
+            if (card.classList.contains('visible') || input.value.trim() !== "") { resetUI(); }
+        }
+        function resetUI() {
+            input.value = ""; clearBtn.style.display = 'none';
+            card.classList.remove('visible');
+            setTimeout(() => { contentArea.innerHTML = ""; }, 500);
+            buyLink.classList.add('hidden'); switchButtons.classList.add('hidden'); feedbackContainer.classList.add('hidden');
+            photoBtn.classList.remove('minimized');
+            document.getElementById('photo-label').innerText = "Analyser une Bague";
+            currentSession = [];
+            input.focus();
+        }
+        input.addEventListener('input', () => { clearBtn.style.display = input.value.length > 0 ? 'block' : 'none'; });
+        function clearInput() { input.value = ''; clearBtn.style.display = 'none'; input.focus(); }
+        async function handlePhotoUpload(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () { demanderIA(null, reader.result); };
+        }
+        function relancerIA(type) {
+            let complement = "";
+            if (type === 'similaire') complement = " (Propose une autre référence dans le même style)";
+            if (type === 'plus_doux') complement = " (C'est trop fort, propose quelque chose de plus doux/léger)";
+            if (type === 'plus_fort') complement = " (Je veux plus de caractère et de puissance)";
+            demanderIA(null, null, complement);
+        }
+        function quickAction(text) { input.value = text; clearBtn.style.display = 'block'; demanderIA(); }
+        async function sendFeedback(vote) {
+            if (vote === 'up') { document.getElementById('btn-up').style.opacity = '1'; document.getElementById('btn-down').style.display = 'none'; }
+            else { document.getElementById('btn-down').style.opacity = '1'; document.getElementById('btn-up').style.display = 'none'; }
+            try { await fetch('/feedback', { method: 'POST', body: JSON.stringify({ vote: vote }) }); } catch (e) {}
+        }
+        function toggleHistory() {
+            historyPanel.innerHTML = "";
+            let history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
+            if (history.length === 0) { historyPanel.innerHTML = '<div class="p-3 italic text-center text-gray-400">Aucune dégustation enregistrée.</div>'; }
+            else { history.forEach(item => { const div = document.createElement('div'); div.className = "history-item"; div.innerHTML = `<span class="text-[#d4af37]">🍂 ${item.cigar}</span><span class="text-xs text-gray-500">${item.date}</span>`; div.onclick = () => quickAction(item.query); historyPanel.appendChild(div); }); }
+            if (historyPanel.classList.contains('hidden')) { historyPanel.classList.remove('hidden'); setTimeout(() => historyPanel.classList.add('open'), 10); }
+            else { historyPanel.classList.remove('open'); setTimeout(() => historyPanel.classList.add('hidden'), 300); }
+        }
+        function saveToHistory(query, suggestion) {
+            let history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
+            history.unshift({ query: query, cigar: suggestion, date: new Date().toLocaleDateString() });
+            localStorage.setItem('cigarHistory', JSON.stringify(history.slice(0, 5)));
+        }
+
+        // --- FONCTION FLAMMES ---
+        function generateFlames(score) {
+            const flameSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="flame-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>`;
+            let html = '<div class="flex items-center gap-1 mt-1">';
+            for (let i = 1; i <= 5; i++) {
+                let icon = flameSVG.replace('flame-icon', `flame-icon ${i <= score ? 'flame-filled' : 'flame-empty'}`);
+                html += icon;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        async function demanderIA(evt, imageBase64 = null, overrideSuffix = null) {
+            let question = imageBase64 ? "Analyse cette photo" : input.value;
+            if (overrideSuffix) question += overrideSuffix;
+            if (!question) return;
+
+            quickActions.classList.add('hidden'); historyPanel.classList.add('hidden');
+            avatarCircle.classList.add('pulse-gold'); loader.classList.remove('hidden');
+            photoBtn.classList.add('minimized'); contentArea.innerHTML = ""; 
+            card.classList.remove('visible'); buyLink.classList.add('hidden'); switchButtons.classList.add('hidden'); 
+            feedbackContainer.classList.add('hidden');
+
+            try {
+                const res = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, image: imageBase64, context: currentSession, client: clientName })
+                });
+                const data = await res.json();
+                
+                if (!imageBase64 && !data.answer.includes("[ERREUR]")) {
+                    currentSession.push({ role: 'user', content: question });
+                    currentSession.push({ role: 'assistant', content: data.answer });
+                    if (currentSession.length > 6) currentSession = currentSession.slice(currentSession.length - 6);
+                }
+
+                avatarCircle.classList.remove('pulse-gold'); loader.classList.add('hidden'); 
+                document.getElementById('photo-label').innerText = "Analyser une Bague";
+                card.classList.add('visible');
+
+                const sections = langData.fr.sections;
+                let cigarFound = "";
+                let delay = 0;
+
+                if (!Object.keys(sections).some(tag => data.answer.includes(tag))) {
+                    contentArea.innerHTML = `<div class="p-4 bg-red-900/20 text-red-200 border border-red-900 rounded-lg text-center">${data.answer}</div>`;
+                    switchButtons.classList.remove('hidden'); switchButtons.classList.add('flex');
+                    return;
+                }
+
+                Object.entries(sections).forEach(([tag, label]) => {
+                    if (data.answer.includes(tag)) {
+                        let content = data.answer.split(tag)[1].split('[')[0].trim();
+                        content = content.replace(/[*•]/g, '').trim(); 
+                        if (!content) return;
+
+                        let formattedHTML = "";
+                        
+                        if (tag === '[PUISSANCE]') {
+                            let lines = content.split(/\r?\n/).filter(line => line.trim() !== "");
+                            formattedHTML = '<div class="flex flex-col gap-3 mt-1">'; 
+                            lines.forEach(line => {
+                                const match = line.match(/\b([1-5])\s*[-–]/); 
+                                if (match) {
+                                    let score = parseInt(match[1]);
+                                    let text = line.replace(/(\d)\s*[-–]/, '').replace(/^\s*N°\d\s*:\s*/, '').trim();
+                                    let cleanLine = line.trim();
+                                    if(!cleanLine.startsWith("N°")) cleanLine = text;
+                                    formattedHTML += `<div class="flex flex-col items-start border-l-2 border-[#d4af37]/30 pl-2">
+                                                        <span class="text-sm font-bold text-[#3e2723]">${cleanLine.replace(match[0], match[0].replace(/\d/, ''))}</span>
+                                                        ${generateFlames(score)}
+                                                      </div>`;
+                                } else { formattedHTML += `<div class="text-sm">${line}</div>`; }
+                            });
+                            formattedHTML += '</div>';
+                        }
+                        else { formattedHTML = `<div class="text-lg leading-relaxed whitespace-pre-line">${content}</div>`; }
+
+                        if (tag === '[SUGGESTION]') {
+                            cigarFound = content.split('\n')[0].replace(/\(.*\)/, '').replace(/N°\d\s*:\s*/, '').trim();
+                            currentCigarName = cigarFound;
+                        }
+
+                        setTimeout(() => {
+                            const div = document.createElement('div');
+                            div.className = `px-4 py-3 bg-[#fffcf5] border-l-4 border-[#3e2723] rounded shadow-sm mb-3 fade-in-line text-[#3e2723]`;
+                            div.innerHTML = `<span class="block text-[10px] uppercase font-bold text-[#997920] mb-1 tracking-widest border-b border-[#3e2723]/10 pb-1 w-full">${label}</span>${formattedHTML}`;
+                            contentArea.appendChild(div);
+                        }, delay);
+                        delay += 200;
+                    }
+                });
+
+                setTimeout(() => {
+                    if (cigarFound) {
+                        buyLink.href = `https://www.google.com/search?q=achat+cigare+${encodeURIComponent(cigarFound)}`;
+                        buyLink.classList.remove('hidden'); switchButtons.classList.remove('hidden'); switchButtons.classList.add('flex'); 
+                        feedbackContainer.classList.remove('hidden'); feedbackContainer.classList.add('flex');
+                        if (!imageBase64) saveToHistory(input.value, cigarFound);
+                    }
+                }, delay);
+
+            } catch (e) {
+                console.error(e);
+                avatarCircle.classList.remove('pulse-gold'); loader.classList.add('hidden');
+                alert("Erreur de connexion avec l'Expert.");
+            }
+        }
+
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') demanderIA(); });
+        let idx = 0;
+        function typeWriter() {
+            let phrases = langData.fr.phrases;
+            let p = phrases[idx % phrases.length], j = 0; input.placeholder = "";
+            let t = setInterval(() => { input.placeholder += p[j++]; if (j === p.length) { clearInterval(t); setTimeout(erase, 1500); } }, 50);
+        }
+        function erase() {
+            let c = input.placeholder;
+            let t = setInterval(() => { input.placeholder = c.substring(0, c.length - 1); c = input.placeholder; if (c.length === 0) { clearInterval(t); idx++; setTimeout(typeWriter, 500); } }, 30);
+        }
+        
+        renderQuickActions();
+        typeWriter();
+    </script>
+</body>
+</html>
