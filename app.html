@@ -84,7 +84,7 @@
     </div>
 
     <header class="mt-8 mb-8 relative px-4 w-full max-w-2xl">
-        <h1 id="main-title" class="text-5xl font-bold gold-gradient uppercase tracking-[0.1em] mb-2 leading-tight drop-shadow-lg">L'Aficionado</h1>
+        <h1 id="main-title" class="text-3xl md:text-5xl font-bold gold-gradient uppercase tracking-[0.1em] mb-2 leading-tight drop-shadow-lg">L'Aficionado</h1>
         <p id="subtitle" class="text-xs text-[#d4af37] font-bold tracking-[0.3em] uppercase border-t border-b border-[#d4af37]/30 py-2 inline-block">Cigares & Spiritueux</p>
         <p id="tagline" class="text-lg text-gray-200 font-light tracking-widest mt-4 italic opacity-90 font-serif">Le cigare, dégusté avec l’élégance du savoir.</p>
     </header>
@@ -225,7 +225,6 @@
         function renderQuickActions() {
             const actions = langData.fr.quick_actions;
             let html = `<div class="flex w-full gap-2 flex-wrap">`;
-            // CORRECTION ICI POUR LE BUG "Surprends-moi" (Apostrophe)
             actions.forEach(action => { html += `<button onclick="quickAction('${action.text.replace(/'/g, "\\'")}')" class="tag-btn flex-1 text-center justify-center">${action.label}</button>`; });
             html += `</div><div class="w-full"><button onclick="toggleHistory()" class="tag-btn w-full justify-center bg-[#2a1810] text-[#d4af37] border-[#d4af37]">📜 Mes Dégustations</button></div>`;
             quickActions.innerHTML = html;
@@ -236,11 +235,11 @@
             document.body.classList.toggle('theme-dark');
         }
         function toggleLegalModal() { legalModal.classList.toggle('hidden'); }
+        
         function handleAvatarClick() {
-            bubble.classList.remove('opacity-0');
-            setTimeout(() => bubble.classList.add('opacity-0'), 3000);
-            if (card.classList.contains('visible') || input.value.trim() !== "") { resetUI(); }
+            window.location.reload();
         }
+
         function resetUI() {
             input.value = ""; clearBtn.style.display = 'none';
             card.classList.remove('visible');
@@ -270,7 +269,7 @@
         function quickAction(text) { input.value = text; clearBtn.style.display = 'block'; demanderIA(); }
         async function sendFeedback(vote) {
             if (vote === 'up') { document.getElementById('btn-up').style.opacity = '1'; document.getElementById('btn-down').style.display = 'none'; }
-            else { document.getElementById('btn-down').style.opacity = '1'; document.getElementById('btn-up').style.display = 'none'; }
+            else { document.getElementById('btn-down').style.opacity = '1'; document.getElementById('btn-down').style.display = 'none'; }
             try { await fetch('/feedback', { method: 'POST', body: JSON.stringify({ vote: vote }) }); } catch (e) {}
         }
         function toggleHistory() {
@@ -332,8 +331,9 @@
                 let cigarFound = "";
                 let delay = 0;
 
+                // MODIFICATION ICI : Style des messages hors format (alerte, discussion simple)
                 if (!Object.keys(sections).some(tag => data.answer.includes(tag))) {
-                    contentArea.innerHTML = `<div class="p-4 bg-red-900/20 text-red-200 border border-red-900 rounded-lg text-center">${data.answer}</div>`;
+                    contentArea.innerHTML = `<div class="p-6 bg-[#fffcf5] text-[#3e2723] border-2 border-[#d4af37] rounded-xl text-center font-bold text-lg shadow-[0_0_15px_rgba(212,175,55,0.3)] font-serif italic">${data.answer}</div>`;
                     switchButtons.classList.remove('hidden'); switchButtons.classList.add('flex');
                     return;
                 }
