@@ -37,7 +37,7 @@
         .pulse-gold { animation: pulseAura 2s infinite; }
         @keyframes pulseAura { 0%, 100% { box-shadow: 0 0 20px rgba(184, 134, 11, 0.2); border-color: #8a6e2f; } 50% { box-shadow: 0 0 60px rgba(212, 175, 55, 0.6); border-color: #ffd700; } }
 
-        /* --- LOADER CIGARE ANIMÉ --- */
+        /* LOADER */
         .cigar-loader-container { position: relative; width: 220px; height: 100px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .cigar-body-anim { position: relative; width: 160px; height: 36px; background: linear-gradient(to bottom, #5d4037, #3e2723 60%, #2a1810); border-radius: 4px 18px 18px 4px; border-bottom: 3px solid #1a0a05; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
         .cigar-body-anim::before { content: ''; position: absolute; left: 25px; top: -1px; bottom: -1px; width: 32px; background: linear-gradient(to right, #b8860b, #d4af37, #b8860b); border-left: 2px solid #ffd700; border-right: 2px solid #ffd700; }
@@ -56,25 +56,29 @@
         .tag-btn { font-size: 0.75rem; padding: 0.5rem 1rem; border: 1px solid #5d4037; border-radius: 4px; background: #fffcf5; color: #3e2723; cursor: pointer; transition: all 0.2s; font-family: 'Montserrat', sans-serif; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .tag-btn:hover { background: #3e2723; color: #d4af37; border-color: #d4af37; }
         
-        .switch-btn { background: #3e2723; border: 1px solid #d4af37; color: #d4af37; font-size: 0.7rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 2px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; cursor: pointer; }
+        .switch-btn { background: #3e2723; border: 1px solid #d4af37; color: #d4af37; font-size: 0.7rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 2px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; flex: 1; }
         .switch-btn:hover { background: #d4af37; color: #1a0500; }
         
-        #history-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #2a1810; margin-top: 10px; border-radius: 8px; color: #e5e7eb; border: 1px solid #5d4037; }
-        #history-panel.open { max-height: 250px; padding: 10px; overflow-y: auto; }
+        #history-panel, #cave-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #2a1810; margin-top: 10px; border-radius: 8px; color: #e5e7eb; border: 1px solid #5d4037; }
+        #history-panel.open, #cave-panel.open { max-height: 300px; padding: 10px; overflow-y: auto; }
+        
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #3e2723; cursor: pointer; font-size: 0.8rem; }
         .history-item:hover { background: #3e2723; }
+        
         #search-bar { background: #fffcf5; border: 2px solid #5d4037; color: #3e2723; }
         #search-bar::placeholder { color: #8d6e63; font-style: italic; }
         
         .flame-icon { width: 18px; height: 18px; display: inline-block; margin-right: 2px; }
         .flame-filled { color: #d4af37; fill: #d4af37; }
         .flame-empty { color: #d4af37; fill: none; stroke: #d4af37; stroke-width: 1.5; opacity: 0.4; }
+
+        .cave-btn { position: absolute; top: 1.5rem; left: 1.5rem; z-index: 50; }
     </style>
 </head>
 <body class="theme-cigar text-gray-100 min-h-screen flex flex-col items-center p-6 text-center relative overflow-x-hidden">
 
-    <div class="absolute top-6 left-6 z-50">
-        <button class="w-10 h-10 rounded-full border border-[#d4af37] bg-black/40 flex items-center justify-center text-xl hover:bg-[#d4af37]/20 transition-colors">🇫🇷</button>
+    <div class="cave-btn">
+        <button onclick="toggleCave()" class="w-10 h-10 rounded-full border border-[#d4af37] bg-black/40 flex items-center justify-center text-xl hover:bg-[#d4af37]/20 transition-colors text-[#ffd700]" title="Ma Cave">⭐</button>
     </div>
 
     <div class="absolute top-6 right-6 z-50">
@@ -117,6 +121,7 @@
 
         <div id="quick-actions" class="flex flex-col gap-2 mb-6 px-1 transition-opacity duration-300"></div>
         <div id="history-panel" class="text-left hidden mb-4"></div>
+        <div id="cave-panel" class="text-left hidden mb-4"></div>
 
         <div id="loader" class="hidden flex-col items-center py-8 mb-6 h-auto relative justify-center transition-all duration-300">
             <div class="cigar-loader-container">
@@ -138,15 +143,19 @@
 
         <div id="response-card" class="text-left border-t border-[#3e2723]/5 pt-2 space-y-4 mt-2">
             <div id="response-content"></div>
-            <a id="buy-link" href="#" target="_blank" class="hidden block text-center py-4 px-4 mt-6 bg-[#3e2723] text-[#d4af37] rounded border border-[#d4af37] font-bold text-sm uppercase shadow-lg hover:bg-black transition-colors">Trouver ce cigare</a>
-            <div id="switch-buttons" class="hidden flex-wrap gap-2 justify-center mt-4 pt-4 border-t border-gray-200/50">
-                <button onclick="relancerIA('similaire')" class="switch-btn">♻️ Similaire</button>
-                <button onclick="relancerIA('plus_doux')" class="switch-btn">☁️ Plus Doux</button>
-                <button onclick="relancerIA('plus_fort')" class="switch-btn">🔥 Plus Fort</button>
+            
+            <div id="all-actions-container" class="hidden flex-col gap-3 mt-6 pt-4 border-t border-gray-200/50">
+                 <a id="buy-link" href="#" target="_blank" class="block w-full text-center py-4 bg-[#3e2723] text-[#d4af37] rounded border border-[#d4af37] font-bold text-sm uppercase shadow-lg hover:bg-black transition-colors">Trouver ce cigare</a>
+                 <div class="flex gap-2 w-full">
+                    <button id="fav-btn" onclick="addToCave()" class="flex-1 py-3 bg-[#fffcf5] text-[#d4af37] border border-[#d4af37] rounded font-bold uppercase text-xs hover:bg-[#d4af37] hover:text-white transition-all shadow-sm">
+                        ⭐ Favoris
+                    </button>
+                    <button onclick="relancerIA('similaire')" class="switch-btn flex-1">🔄 Similaire</button>
+                    <button onclick="relancerIA('surprise')" class="switch-btn flex-1">🎲 Surprise</button>
+                 </div>
             </div>
             
             <div id="feedback-container" class="hidden flex flex-col items-center mt-4">
-                <p class="text-[10px] text-gray-400 italic mb-2 uppercase tracking-widest">Conseil pertinent ?</p>
                 <div class="flex gap-8 items-end">
                     <button onclick="sendFeedback('down')" id="btn-down" class="text-lg opacity-60 hover:opacity-100 transition-all" title="Pas pertinent">🥀</button>
                     <button onclick="sendFeedback('up')" id="btn-up" class="text-3xl opacity-100 hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]" title="Pertinent">🌹</button>
@@ -185,13 +194,15 @@
         const loader = document.getElementById('loader');
         const avatarCircle = document.getElementById('avatar-circle');
         const buyLink = document.getElementById('buy-link');
-        const switchButtons = document.getElementById('switch-buttons');
+        const allActionsContainer = document.getElementById('all-actions-container');
         const bubble = document.getElementById('bubble');
         const photoBtn = document.getElementById('photo-btn');
         const historyPanel = document.getElementById('history-panel');
+        const cavePanel = document.getElementById('cave-panel');
         const quickActions = document.getElementById('quick-actions');
         const feedbackContainer = document.getElementById('feedback-container');
         const legalModal = document.getElementById('legal-modal');
+        const favBtn = document.getElementById('fav-btn');
         
         let currentLang = 'fr';
         let currentSession = [];
@@ -244,7 +255,7 @@
             input.value = ""; clearBtn.style.display = 'none';
             card.classList.remove('visible');
             setTimeout(() => { contentArea.innerHTML = ""; }, 500);
-            buyLink.classList.add('hidden'); switchButtons.classList.add('hidden'); feedbackContainer.classList.add('hidden');
+            allActionsContainer.classList.add('hidden'); feedbackContainer.classList.add('hidden');
             photoBtn.classList.remove('minimized');
             document.getElementById('photo-label').innerText = "Analyser une Bague";
             currentSession = [];
@@ -259,13 +270,14 @@
             reader.readAsDataURL(file);
             reader.onload = function () { demanderIA(null, reader.result); };
         }
+        
         function relancerIA(type) {
             let complement = "";
-            if (type === 'similaire') complement = " (Propose une autre référence dans le même style)";
-            if (type === 'plus_doux') complement = " (C'est trop fort, propose quelque chose de plus doux/léger)";
-            if (type === 'plus_fort') complement = " (Je veux plus de caractère et de puissance)";
+            if (type === 'similaire') complement = " (Propose une autre référence similaire mais différente)";
+            if (type === 'surprise') complement = " (Surprends-moi, propose quelque chose de totalement différent)";
             demanderIA(null, null, complement);
         }
+
         function quickAction(text) { input.value = text; clearBtn.style.display = 'block'; demanderIA(); }
         async function sendFeedback(vote) {
             if (vote === 'up') { document.getElementById('btn-up').style.opacity = '1'; document.getElementById('btn-down').style.display = 'none'; }
@@ -273,6 +285,7 @@
             try { await fetch('/feedback', { method: 'POST', body: JSON.stringify({ vote: vote }) }); } catch (e) {}
         }
         function toggleHistory() {
+            cavePanel.classList.add('hidden'); cavePanel.classList.remove('open'); 
             historyPanel.innerHTML = "";
             let history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
             if (history.length === 0) { historyPanel.innerHTML = '<div class="p-3 italic text-center text-gray-400">Aucune dégustation enregistrée.</div>'; }
@@ -286,7 +299,45 @@
             localStorage.setItem('cigarHistory', JSON.stringify(history.slice(0, 5)));
         }
 
-        // --- FONCTION FLAMMES ---
+        function toggleCave() {
+            historyPanel.classList.add('hidden'); historyPanel.classList.remove('open'); 
+            cavePanel.innerHTML = "";
+            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
+            
+            if (cave.length === 0) { 
+                cavePanel.innerHTML = '<div class="p-3 italic text-center text-gray-400">Votre cave est vide. Ajoutez des cigares !</div>'; 
+            } else { 
+                cave.forEach(cigar => { 
+                    const div = document.createElement('div'); 
+                    div.className = "history-item"; 
+                    div.innerHTML = `<span class="text-[#ffd700] font-bold">⭐ ${cigar}</span><span class="text-xs text-red-400 cursor-pointer" onclick="removeFromCave('${cigar.replace(/'/g, "\\'")}', event)">❌</span>`; 
+                    cavePanel.appendChild(div); 
+                }); 
+            }
+            if (cavePanel.classList.contains('hidden')) { cavePanel.classList.remove('hidden'); setTimeout(() => cavePanel.classList.add('open'), 10); }
+            else { cavePanel.classList.remove('open'); setTimeout(() => cavePanel.classList.add('hidden'), 300); }
+        }
+
+        function addToCave() {
+            if(!currentCigarName) return;
+            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
+            if(!cave.includes(currentCigarName)) {
+                cave.unshift(currentCigarName);
+                localStorage.setItem('myCigarCave', JSON.stringify(cave));
+                favBtn.innerHTML = "✅ Ajouté";
+                favBtn.classList.remove('bg-[#fffcf5]', 'text-[#d4af37]');
+                favBtn.classList.add('bg-[#d4af37]', 'text-black');
+            }
+        }
+
+        function removeFromCave(name, e) {
+            e.stopPropagation();
+            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
+            cave = cave.filter(c => c !== name);
+            localStorage.setItem('myCigarCave', JSON.stringify(cave));
+            toggleCave(); toggleCave(); 
+        }
+
         function generateFlames(score) {
             const flameSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="flame-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>`;
             let html = '<div class="flex items-center gap-1 mt-1">';
@@ -303,11 +354,12 @@
             if (overrideSuffix) question += overrideSuffix;
             if (!question) return;
 
-            quickActions.classList.add('hidden'); historyPanel.classList.add('hidden');
+            quickActions.classList.add('hidden'); historyPanel.classList.add('hidden'); cavePanel.classList.add('hidden');
             avatarCircle.classList.add('pulse-gold'); loader.classList.remove('hidden');
             photoBtn.classList.add('minimized'); contentArea.innerHTML = ""; 
-            card.classList.remove('visible'); buyLink.classList.add('hidden'); switchButtons.classList.add('hidden'); 
+            card.classList.remove('visible'); allActionsContainer.classList.add('hidden'); 
             feedbackContainer.classList.add('hidden');
+            favBtn.innerHTML = "⭐ Favoris"; favBtn.classList.add('bg-[#fffcf5]', 'text-[#d4af37]'); favBtn.classList.remove('bg-[#d4af37]', 'text-black');
 
             try {
                 const res = await fetch('/ask', {
@@ -317,7 +369,7 @@
                 });
                 const data = await res.json();
                 
-                if (!imageBase64 && !data.answer.includes("[ERREUR]")) {
+                if (!imageBase64 && !data.answer.includes("[ERREUR]") && !data.answer.includes("passion n'est que le cigare")) {
                     currentSession.push({ role: 'user', content: question });
                     currentSession.push({ role: 'assistant', content: data.answer });
                     if (currentSession.length > 6) currentSession = currentSession.slice(currentSession.length - 6);
@@ -331,17 +383,19 @@
                 let cigarFound = "";
                 let delay = 0;
 
-                // MODIFICATION ICI : Style des messages hors format (alerte, discussion simple)
                 if (!Object.keys(sections).some(tag => data.answer.includes(tag))) {
                     contentArea.innerHTML = `<div class="p-6 bg-[#fffcf5] text-[#3e2723] border-2 border-[#d4af37] rounded-xl text-center font-bold text-lg shadow-[0_0_15px_rgba(212,175,55,0.3)] font-serif italic">${data.answer}</div>`;
-                    switchButtons.classList.remove('hidden'); switchButtons.classList.add('flex');
+                    allActionsContainer.classList.remove('hidden'); allActionsContainer.classList.add('flex');
                     return;
                 }
 
                 Object.entries(sections).forEach(([tag, label]) => {
                     if (data.answer.includes(tag)) {
-                        let content = data.answer.split(tag)[1].split('[')[0].trim();
-                        content = content.replace(/[*•]/g, '').trim(); 
+                        let content = data.answer.split(tag)[1];
+                        const nextTagIndex = content.search(/\[[A-Z]+\]/);
+                        if (nextTagIndex !== -1) { content = content.substring(0, nextTagIndex); }
+                        content = content.trim();
+
                         if (!content) return;
 
                         let formattedHTML = "";
@@ -353,22 +407,34 @@
                                 const match = line.match(/\b([1-5])\s*[-–]/); 
                                 if (match) {
                                     let score = parseInt(match[1]);
-                                    let text = line.replace(/(\d)\s*[-–]/, '').replace(/^\s*N°\d\s*:\s*/, '').trim();
-                                    let cleanLine = line.trim();
-                                    if(!cleanLine.startsWith("N°")) cleanLine = text;
+                                    let text = line.replace(/(\d)\s*[-–]/, '').trim();
                                     formattedHTML += `<div class="flex flex-col items-start border-l-2 border-[#d4af37]/30 pl-2">
-                                                        <span class="text-sm font-bold text-[#3e2723]">${cleanLine.replace(match[0], match[0].replace(/\d/, ''))}</span>
+                                                        <span class="text-sm font-bold text-[#3e2723]">${text}</span>
                                                         ${generateFlames(score)}
                                                       </div>`;
                                 } else { formattedHTML += `<div class="text-sm">${line}</div>`; }
                             });
                             formattedHTML += '</div>';
                         }
-                        else { formattedHTML = `<div class="text-lg leading-relaxed whitespace-pre-line">${content}</div>`; }
-
-                        if (tag === '[SUGGESTION]') {
-                            cigarFound = content.split('\n')[0].replace(/\(.*\)/, '').replace(/N°\d\s*:\s*/, '').trim();
-                            currentCigarName = cigarFound;
+                        else if (tag === '[AROMES]' || tag === '[ACCORDS]') {
+                            // Nettoyage des crochets parasites ici !
+                            let items = content.split(/[-•]/).filter(i => i.trim() !== "");
+                            formattedHTML = '<div class="flex flex-col gap-1 mt-1">';
+                            items.forEach(item => {
+                                let cleanItem = item.replace(/[\[\]]/g, '').trim(); // Supprime [ ]
+                                formattedHTML += `<div class="flex items-center gap-2"><span class="text-[#d4af37] text-xs">●</span> <span>${cleanItem}</span></div>`;
+                            });
+                            formattedHTML += '</div>';
+                        }
+                        else { 
+                             // Nettoyage général des crochets pour les autres sections (comme Suggestion)
+                             let cleanContent = content;
+                             if (tag === '[SUGGESTION]') {
+                                 cleanContent = content.replace(/[\[\]]/g, '').replace('mm', '').trim();
+                                 cigarFound = cleanContent.split('\n')[0].replace(/\(.*\)/, '').replace(/N°\d\s*:\s*/, '').trim();
+                                 currentCigarName = cigarFound;
+                             }
+                             formattedHTML = `<div class="text-lg leading-relaxed whitespace-pre-line">${cleanContent}</div>`; 
                         }
 
                         setTimeout(() => {
@@ -384,7 +450,7 @@
                 setTimeout(() => {
                     if (cigarFound) {
                         buyLink.href = `https://www.google.com/search?q=achat+cigare+${encodeURIComponent(cigarFound)}`;
-                        buyLink.classList.remove('hidden'); switchButtons.classList.remove('hidden'); switchButtons.classList.add('flex'); 
+                        allActionsContainer.classList.remove('hidden'); allActionsContainer.classList.add('flex');
                         feedbackContainer.classList.remove('hidden'); feedbackContainer.classList.add('flex');
                         if (!imageBase64) saveToHistory(input.value, cigarFound);
                     }

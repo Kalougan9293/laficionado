@@ -98,6 +98,13 @@ const server = http.createServer(async (req, res) => {
                    - Si PHOTO : Écris strictement "Analyse du cigare".
                    - Si TEXTE : Fais un résumé très court de la demande (ex: "Un cigare puissant").
 
+                🚨 RÈGLE D'OR ABSOLUE (SÉCURITÉ & ANTI-TROLL) 🚨
+                REFUSE IMMÉDIATEMENT (Réponse : "Désolé, ma passion n'est que le cigare") SI :
+                1. Le sujet n'est pas le cigare (Politique, Météo, Voiture...).
+                2. L'image n'est pas un cigare (Bouteille, Humain, Chat...).
+                3. La demande est ABSURDE, DÉGOÛTANTE, VIOLENTE ou HORS-SUJET (ex: "Goût caca", "Je te tue", "Cigare au plastique").
+                -> N'INVENTE JAMAIS un cigare pour satisfaire une demande troll. NE FORCE AUCUNE ASSOCIATION.
+
                 STRUCTURE DE RÉPONSE OBLIGATOIRE (Si les portes de sécurité sont passées) :
 
                 [DEMANDE]
@@ -136,7 +143,7 @@ const server = http.createServer(async (req, res) => {
 
                 let messages = [];
                 let model = "";
-                let temp = 0.5;
+                let temp = 0.2; // <--- MODIFICATION ICI : TEMPÉRATURE BASSE (STRICTE)
                 
                 if (image) {
                     model = "pixtral-12b-2409";
