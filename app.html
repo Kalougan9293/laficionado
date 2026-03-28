@@ -79,8 +79,8 @@
         .switch-btn { background: #3e2723; border: 1px solid #d4af37; color: #d4af37; font-size: 0.8rem; font-weight: 600; padding: 0.6rem 1rem; border-radius: 2px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; flex: 1; font-family: 'Cinzel', serif; }
         .switch-btn:hover { background: #d4af37; color: #1a0500; }
         
-        #history-panel, #cave-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #2a1810; margin-top: 10px; border-radius: 8px; color: #e5e7eb; border: 1px solid #5d4037; }
-        #history-panel.open, #cave-panel.open { max-height: 300px; padding: 10px; overflow-y: auto; }
+        #history-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #2a1810; margin-top: 10px; border-radius: 8px; color: #e5e7eb; border: 1px solid #5d4037; }
+        #history-panel.open { max-height: 300px; padding: 10px; overflow-y: auto; }
         
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #3e2723; cursor: pointer; font-size: 0.9rem; font-family: 'Montserrat', sans-serif; font-weight: 400; }
         .history-item:hover { background: #3e2723; }
@@ -92,7 +92,10 @@
         .flame-filled { color: #d4af37; fill: #d4af37; }
         .flame-empty { color: #d4af37; fill: none; stroke: #d4af37; stroke-width: 1.5; opacity: 0.4; }
 
-        .cave-btn { position: absolute; top: 1.5rem; left: 1.5rem; z-index: 50; }
+        .lang-switch { position: absolute; top: 2.75rem; left: 1.5rem; z-index: 50; }
+        .lang-menu { position: absolute; top: calc(100% + 6px); left: 0; min-width: 10rem; border-radius: 8px; border: 1px solid #5d4037; background: #1a1410; box-shadow: 0 12px 40px rgba(0,0,0,0.5); overflow: hidden; }
+        .lang-menu button { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.8rem; color: #e5e7eb; font-family: 'Montserrat', sans-serif; border: none; background: transparent; cursor: pointer; }
+        .lang-menu button:hover { background: #3e2723; color: #d4af37; }
 
         /* MODALS */
         .modal-overlay { background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
@@ -108,15 +111,28 @@
         /* FOOTER LINKS */
         .admin-link { font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 0.2em; transition: color 0.3s; cursor: pointer; opacity: 0.6; font-family: 'Montserrat', sans-serif; font-weight: 600; }
         .admin-link:hover { opacity: 1; }
+
+        .demo-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #facc15; color: #1c1917; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase; text-align: center; padding: 0.35rem 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .nos-cigares-link { color: #c9a227; font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.28em; text-transform: uppercase; background: transparent; border: none; cursor: pointer; opacity: 0.88; text-shadow: 0 0 12px rgba(212, 175, 55, 0.25); transition: color 0.2s, opacity 0.2s; }
+        .nos-cigares-link:hover { color: #e8d48b; opacity: 1; }
+        .gout-tab { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; padding: 0.45rem 0.6rem; border-radius: 4px; border: 1px solid #5d4037; background: #fffcf5; color: #3e2723; cursor: pointer; transition: all 0.2s; }
+        .gout-tab.active { background: #3e2723; color: #d4af37; border-color: #d4af37; }
     </style>
 </head>
-<body class="theme-cigar text-gray-100 min-h-screen flex flex-col items-center p-6 text-center relative overflow-x-hidden">
+<body class="theme-cigar text-gray-100 min-h-screen flex flex-col items-center p-6 pt-12 text-center relative overflow-x-hidden">
 
-    <div class="cave-btn">
-        <button onclick="toggleCave()" class="w-10 h-10 rounded-full border border-[#d4af37] bg-black/40 flex items-center justify-center text-xl hover:bg-[#d4af37]/20 transition-colors text-[#ffd700]" title="Ma Cave">⭐</button>
+    <div class="demo-banner" role="status"><span id="i18n-demo-banner">Démonstration</span></div>
+
+    <div class="lang-switch">
+        <button type="button" id="lang-menu-btn" onclick="toggleLangMenu(event)" class="w-10 h-10 rounded-full border border-[#d4af37] bg-black/40 flex items-center justify-center text-lg leading-none hover:bg-[#d4af37]/20 transition-colors" title="Langue" aria-haspopup="true" aria-expanded="false">🇫🇷</button>
+        <div id="lang-menu" class="lang-menu hidden" role="menu">
+            <button type="button" role="menuitem" onclick="setLang('fr')"><span>🇫🇷</span> Français</button>
+            <button type="button" role="menuitem" onclick="setLang('en')"><span>🇬🇧</span> English</button>
+            <button type="button" role="menuitem" onclick="setLang('ru')"><span>🇷🇺</span> Русский</button>
+        </div>
     </div>
 
-    <div class="absolute top-6 right-6 z-50">
+    <div class="absolute top-12 right-6 z-50">
         <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-[#d4af37] text-[#d4af37] bg-black/40 flex items-center justify-center hover:bg-[#d4af37] hover:text-black transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>
         </button>
@@ -124,13 +140,13 @@
 
     <header class="mt-8 mb-8 relative px-4 w-full max-w-2xl">
         <h1 id="main-title" class="text-3xl md:text-5xl font-bold gold-gradient uppercase tracking-[0.1em] mb-2 leading-tight drop-shadow-lg">L'Aficionado</h1>
-        <p id="subtitle" class="text-sm text-[#d4af37] font-bold tracking-[0.3em] uppercase border-t border-b border-[#d4af37]/30 py-2 inline-block font-sans-serif-luxe">Cigares & Spiritueux</p>
-        <p id="tagline" class="text-xl text-gray-200 font-light tracking-widest mt-4 italic opacity-90 font-serif">Le cigare, dégusté avec l’élégance du savoir.</p>
+        <p id="i18n-subtitle" class="text-sm text-[#d4af37] font-bold tracking-[0.3em] uppercase border-t border-b border-[#d4af37]/30 py-2 inline-block font-sans-serif-luxe">Cigares & Spiritueux</p>
+        <p id="i18n-tagline" class="text-xl text-gray-200 font-light tracking-widest mt-4 italic opacity-90 font-serif">Le cigare, dégusté avec l’élégance du savoir.</p>
     </header>
 
     <div class="mb-10 relative group z-30">
         <div id="bubble" class="opacity-0 absolute -top-16 left-1/2 transform -translate-x-1/2 bg-[#fffcf5] text-[#3e2723] px-4 py-2 rounded shadow-xl text-base font-serif border border-[#d4af37] w-64 z-40 transition-all duration-300 pointer-events-none">
-            Quel est votre désir aujourd'hui ?
+            <span id="i18n-bubble">Quel est votre désir aujourd'hui ?</span>
             <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#fffcf5] rotate-45 border-b border-r border-[#d4af37]"></div>
         </div>
 
@@ -139,7 +155,7 @@
                 <img src="cigare.png" alt="Aficionado" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity scale-105">
             </div>
             <div class="avatar-banner">
-                <span class="text-[#d4af37] text-xs font-bold uppercase tracking-[0.25em] whitespace-nowrap font-sans-serif-luxe">Expert Privé</span>
+                <span id="i18n-expert-badge" class="text-[#d4af37] text-xs font-bold uppercase tracking-[0.25em] whitespace-nowrap font-sans-serif-luxe">Expert Privé</span>
             </div>
         </div>
     </div>
@@ -147,7 +163,7 @@
     <div class="w-full max-w-lg bg-[#fffcf5] rounded-xl px-6 pt-8 pb-4 shadow-2xl text-gray-800 relative z-20 border-t-4 border-[#d4af37]">
         
         <div class="relative mb-4">
-            <input type="text" id="search-bar" class="w-full rounded-lg p-4 pr-12 focus:outline-none text-lg font-serif placeholder-opacity-50 shadow-inner" placeholder="Décrivez votre envie...">
+            <input type="text" id="search-bar" class="w-full rounded-lg p-4 pr-12 focus:outline-none text-lg font-serif placeholder-opacity-50 shadow-inner" placeholder="">
             <div id="clear-btn" onclick="clearInput()" class="absolute right-12 top-4 cursor-pointer text-gray-400 hover:text-[#3e2723] hidden font-bold text-xl px-2">✕</div>
             <div onclick="demanderIA()" class="absolute right-4 top-4 cursor-pointer text-[#3e2723] hover:text-[#d4af37] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" /></svg>
@@ -158,7 +174,6 @@
             </div>
 
         <div id="history-panel" class="text-left hidden mb-4"></div>
-        <div id="cave-panel" class="text-left hidden mb-4"></div>
 
         <div id="loader" class="hidden flex-col items-center py-8 mb-6 h-auto relative justify-center transition-all duration-300">
             <div class="cigar-loader-container">
@@ -177,42 +192,43 @@
             <span id="photo-label" class="text-white font-bold text-xl uppercase tracking-wider relative z-10 font-serif">Mes Envies</span>
         </button>
 
-        <div id="response-card" class="text-left border-t border-[#3e2723]/5 pt-2 space-y-4 mt-2">
+        <div id="response-card" class="text-left space-y-3 mt-0 pt-0">
             <div id="response-content"></div>
             
             <div id="all-actions-container" class="hidden flex-col gap-3 mt-6 pt-4 border-t border-gray-200/50">
                  <a id="buy-link" href="#" target="_blank" class="block w-full text-center py-4 bg-[#3e2723] text-[#d4af37] rounded border border-[#d4af37] font-bold text-base uppercase shadow-lg hover:bg-black transition-colors font-sans-serif-luxe">Trouver ce cigare</a>
                  <div class="flex gap-2 w-full">
-                    <button id="fav-btn" onclick="addToCave()" class="flex-1 py-3 bg-[#fffcf5] text-[#d4af37] border border-[#d4af37] rounded font-bold uppercase text-sm hover:bg-[#d4af37] hover:text-white transition-all shadow-sm font-sans-serif-luxe">
-                        ⭐ Favoris
-                    </button>
-                    <button onclick="relancerIA('similaire')" class="switch-btn flex-1">🔄 Similaire</button>
-                    <button onclick="relancerIA('surprise')" class="switch-btn flex-1">🎲 Surprise</button>
+                    <button type="button" onclick="relancerIA('similaire')" class="switch-btn flex-1" id="i18n-btn-similar">🔄 Similaire</button>
+                    <button type="button" onclick="relancerIA('surprise')" class="switch-btn flex-1" id="i18n-btn-surprise">🎲 Surprise</button>
                  </div>
             </div>
             
             <div id="feedback-container" class="hidden flex flex-col items-center mt-4">
                 <div class="flex gap-8 items-end">
-                    <button onclick="sendFeedback('down')" id="btn-down" class="text-2xl opacity-60 hover:opacity-100 transition-all" title="Pas pertinent">🥀</button>
-                    <button onclick="sendFeedback('up')" id="btn-up" class="text-4xl opacity-100 hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]" title="Pertinent">🌹</button>
+                    <button type="button" onclick="sendFeedback('down')" id="btn-down" class="text-2xl opacity-60 hover:opacity-100 transition-all" title="">🥀</button>
+                    <button type="button" onclick="sendFeedback('up')" id="btn-up" class="text-4xl opacity-100 hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]" title="">🌹</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="w-full max-w-lg flex flex-col items-center mt-1 mb-2">
+        <button type="button" onclick="openNosCigaresModal()" class="nos-cigares-link" id="i18n-nos-cigares-link">Nos cigares</button>
+    </div>
+
     <footer class="mt-auto w-full pb-6 flex flex-col items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
-        <p class="text-[#d4af37] text-xl font-light italic font-serif mb-4 mt-8">"Fumer est un vice, l'apprécier est un art."</p>
+        <p id="i18n-footer-quote" class="text-[#d4af37] text-xl font-light italic font-serif mb-4 mt-8">"Fumer est un vice, l'apprécier est un art."</p>
         <div class="flex justify-center gap-6 text-[11px] text-[#d4af37]/50 tracking-widest font-sans lowercase">
-            <span onclick="openPresentation()" class="admin-link">Présentation</span>
-            <span onclick="openAdmin()" class="admin-link">Admin (Démo)</span>
+            <span onclick="openPresentation()" class="admin-link" id="i18n-link-pres">Présentation</span>
+            <span onclick="openAdmin()" class="admin-link" id="i18n-link-admin">Admin (Démo)</span>
         </div>
-        <p class="text-white/20 text-[10px] uppercase tracking-widest font-sans">© 2026 L'Aficionado. TOUS DROITS RESERVES <br>Fumer nuit gravement à la santé.</p>
+        <p id="i18n-footer-legal" class="text-white/20 text-[10px] uppercase tracking-widest font-sans">© 2026 L'Aficionado. TOUS DROITS RESERVES <br>Fumer nuit gravement à la santé.</p>
     </footer>
 
     <div id="envies-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay">
         <div class="modal-content w-full max-w-md p-6 rounded relative text-left bg-[#fffcf5] border border-[#5d4037]">
             <button onclick="closeEnviesModal()" class="absolute top-4 right-4 text-[#8d6e63] hover:text-[#d4af37] text-2xl">✕</button>
-            <h2 class="text-2xl text-[#3e2723] font-serif mb-6 text-center border-b border-[#3e2723]/20 pb-3 font-bold">Quel cigare vous correspond ?</h2>
+            <h2 id="i18n-envies-title" class="text-2xl text-[#3e2723] font-serif mb-6 text-center border-b border-[#3e2723]/20 pb-3 font-bold">Quel cigare vous correspond ?</h2>
             
             <div class="space-y-2 max-h-[60vh] overflow-y-auto pr-2">
                 
@@ -352,57 +368,40 @@
 
             </div>
 
-            <button onclick="submitEnvies()" class="gold-btn w-full py-4 mt-6 rounded text-base font-bold text-white bg-[#3e2723] tracking-widest">Trouver mon cigare</button>
+            <button type="button" onclick="submitEnvies()" id="i18n-envies-submit" class="gold-btn w-full py-4 mt-6 rounded text-base font-bold text-white bg-[#3e2723] tracking-widest">Trouver mon cigare</button>
+        </div>
+    </div>
+
+    <div id="nos-cigares-modal" class="hidden fixed inset-0 z-[65] flex items-center justify-center p-4 modal-overlay">
+        <div class="modal-content w-full max-w-lg max-h-[85vh] flex flex-col rounded-lg overflow-hidden">
+            <div class="p-4 border-b border-[#3e2723]/20 flex justify-between items-center shrink-0">
+                <h2 id="i18n-nos-modal-title" class="text-xl text-[#3e2723] font-serif font-bold tracking-wide">Notre sélection</h2>
+                <button type="button" onclick="closeNosCigaresModal()" class="text-[#8d6e63] hover:text-[#d4af37] text-2xl leading-none">&times;</button>
+            </div>
+            <div class="px-3 pt-3 pb-2 overflow-x-auto shrink-0 border-b border-[#3e2723]/10">
+                <div id="nos-cigares-tabs" class="flex flex-wrap gap-2 justify-center min-w-min"></div>
+            </div>
+            <div id="nos-cigares-list" class="flex-1 overflow-y-auto p-4 space-y-2 text-left"></div>
+            <div id="nos-cigares-detail" class="hidden border-t border-[#d4af37]/40 bg-[#fffef8] p-4 text-left shrink-0">
+                <p id="nos-cigares-detail-title" class="font-serif font-bold text-[#3e2723] text-lg mb-2"></p>
+                <p id="nos-cigares-detail-text" class="text-sm text-[#3e2723]/90 font-sans-serif-luxe leading-relaxed"></p>
+                <button type="button" onclick="askExpertAboutCigar()" id="nos-cigares-ask-btn" class="gold-btn w-full mt-4 py-3 rounded text-sm font-bold text-white tracking-widest">Demander l'avis de l'expert</button>
+            </div>
         </div>
     </div>
 
     <div id="presentation-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay">
         <div class="bg-[#fffcf5] text-[#3e2723] w-full max-w-sm p-8 rounded shadow-2xl relative text-center border-4 border-[#d4af37]">
             <button onclick="document.getElementById('presentation-modal').classList.add('hidden')" class="absolute top-2 right-4 text-3xl font-bold">&times;</button>
-            <h2 class="text-2xl font-serif font-bold mb-2 uppercase tracking-wide">Boostez vos ventes</h2>
+            <h2 id="i18n-pres-title" class="text-2xl font-serif font-bold mb-2 uppercase tracking-wide">Boostez vos ventes</h2>
             <div class="w-16 h-1 bg-[#d4af37] mx-auto mb-6"></div>
-            <p class="font-medium mb-6 text-base leading-relaxed font-sans-serif-luxe">L'Aficionado transforme chaque visiteur en acheteur confiant. Offrez un <span class="font-bold">conseil expert 24/7</span> sans formation staff.</p>
+            <p id="i18n-pres-lead" class="font-medium mb-6 text-base leading-relaxed font-sans-serif-luxe">L'Aficionado transforme chaque visiteur en acheteur confiant. Offrez un <span class="font-bold">conseil expert 24/7</span> sans formation staff.</p>
             <ul class="text-left text-base space-y-4 mb-8 pl-4 font-sans-serif-luxe font-medium">
-                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> Augmente le panier moyen</li>
-                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> Guide les débutants</li>
-                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> Expérience client premium</li>
+                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> <span id="i18n-pres-li1">Augmente le panier moyen</span></li>
+                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> <span id="i18n-pres-li2">Guide les débutants</span></li>
+                <li class="flex items-center gap-3"><span class="text-[#d4af37] text-xl">✓</span> <span id="i18n-pres-li3">Expérience client premium</span></li>
             </ul>
-            <p class="text-[#d4af37] text-base font-bold uppercase tracking-widest text-center mt-4">On s'adapte à VOTRE cave</p>
-        </div>
-    </div>
-
-    <div id="admin-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay">
-        <div class="bg-[#2a2a2a] text-gray-200 w-full max-w-lg p-6 rounded shadow-2xl relative border border-[#5d4037]">
-            <button onclick="document.getElementById('admin-modal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-400 hover:text-white text-2xl">&times;</button>
-            <div class="flex justify-between items-center mb-6 border-b border-gray-600 pb-2">
-                <h2 class="text-lg font-mono text-[#d4af37]">ADMIN DASHBOARD <span class="text-xs bg-[#d4af37] text-black px-1 rounded ml-2">DEMO</span></h2>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-[#1a1a1a] p-3 rounded border border-gray-700">
-                    <div class="text-xs text-gray-500 uppercase">Clients conseillés (24h)</div>
-                    <div class="text-2xl font-bold text-white mt-1">42</div>
-                </div>
-                <div class="bg-[#1a1a1a] p-3 rounded border border-gray-700">
-                    <div class="text-xs text-gray-500 uppercase">Taux de conversion</div>
-                    <div class="text-2xl font-bold text-[#d4af37] mt-1">18%</div>
-                </div>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-xs uppercase text-gray-500 mb-2">Top 3 Cigares demandés</h3>
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between bg-[#1a1a1a] p-2 rounded"><span class="text-white">Partagás Serie D No.4</span> <span class="text-[#d4af37]">15 req</span></div>
-                    <div class="flex justify-between bg-[#1a1a1a] p-2 rounded"><span class="text-white">Montecristo No.2</span> <span class="text-[#d4af37]">12 req</span></div>
-                    <div class="flex justify-between bg-[#1a1a1a] p-2 rounded"><span class="text-white">H. Upmann Magnum 54</span> <span class="text-[#d4af37]">8 req</span></div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-xs uppercase text-gray-500 mb-2">Mouchard (Dernières requêtes locales)</h3>
-                <div id="admin-tracker" class="text-xs font-mono bg-black p-3 rounded h-24 overflow-y-auto text-green-400">
-                    </div>
-            </div>
+            <p id="i18n-pres-foot" class="text-[#d4af37] text-base font-bold uppercase tracking-widest text-center mt-4">On s'adapte à VOTRE cave</p>
         </div>
     </div>
 
@@ -418,30 +417,236 @@
         const bubble = document.getElementById('bubble');
         const photoBtn = document.getElementById('photo-btn');
         const historyPanel = document.getElementById('history-panel');
-        const cavePanel = document.getElementById('cave-panel');
         const quickActions = document.getElementById('quick-actions');
         const feedbackContainer = document.getElementById('feedback-container');
-        const favBtn = document.getElementById('fav-btn');
-        
-        let currentLang = 'fr';
+
+        const LANG_STORE = 'aficionadoLang';
+        const FLAGS = { fr: '🇫🇷', en: '🇬🇧', ru: '🇷🇺' };
+        let currentLang = localStorage.getItem(LANG_STORE) || 'fr';
         let currentSession = [];
         let currentCigarName = "";
         const urlParams = new URLSearchParams(window.location.search);
         const clientName = urlParams.get('client');
 
-        // 6 BOUTONS RAPIDES
-        const quickButtons = [
-            { label: "Débutant / Doux ☁️", val: "Je débute, je veux un cigare très doux et accessible." },
-            { label: "Expert / Puissant 🔥", val: "Je suis un expert, je veux un cigare puissant et complexe." },
-            { label: "Express (20min) ⏱️", val: "J'ai peu de temps, propose un petit format (20-30 min)." },
-            { label: "Cubain Authentique 🇨🇺", val: "Je veux un pur havane, un classique cubain." },
-            { label: "Budget Maîtrisé 💰", val: "Un bon rapport qualité/prix, pas trop cher." },
-            { label: "Surprenez-moi 🎲", val: "Surprends-moi avec un cigare atypique ou méconnu." }
-        ];
+        function getUi() { return UI[currentLang] || UI.fr; }
+
+        const UI = {
+            fr: {
+                pageTitle: "L'Aficionado - Expert Cigare",
+                demoBanner: "Démonstration",
+                subtitle: "Cigares & Spiritueux",
+                tagline: "Le cigare, dégusté avec l'élégance du savoir.",
+                bubble: "Quel est votre désir aujourd'hui ?",
+                expertBadge: "Expert Privé",
+                searchPh: "Décrivez votre envie...",
+                mesEnvies: "Mes Envies",
+                buyCigar: "Trouver ce cigare",
+                similar: "🔄 Similaire",
+                surprise: "🎲 Surprise",
+                feedbackNo: "Pas pertinent",
+                feedbackYes: "Pertinent",
+                footerQuote: "\"Fumer est un vice, l'apprécier est un art.\"",
+                linkPres: "Présentation",
+                linkAdmin: "Admin (Démo)",
+                footerLegal: "© 2026 L'Aficionado. TOUS DROITS RESERVES <br>Fumer nuit gravement à la santé.",
+                nosLink: "Nos cigares",
+                nosTitle: "Notre sélection",
+                nosAsk: "Demander l'avis de l'expert",
+                nosLoad: "Chargement…",
+                nosErr: "Impossible de charger le stock.",
+                nosEmpty: "Aucun cigare dans cette catégorie.",
+                enviesTitle: "Quel cigare vous correspond ?",
+                enviesSubmit: "Trouver mon cigare",
+                enviesAlert: "Sélectionnez au moins un critère.",
+                presTitle: "Boostez vos ventes",
+                presLead: "L'Aficionado transforme chaque visiteur en acheteur confiant. Offrez un <span class=\"font-bold\">conseil expert 24/7</span> sans formation staff.",
+                presLi1: "Augmente le panier moyen",
+                presLi2: "Guide les débutants",
+                presLi3: "Expérience client premium",
+                presFoot: "On s'adapte à VOTRE cave",
+                analyzeImage: "Analyse cette photo",
+                relSim: " (Propose une autre référence similaire mais différente)",
+                relSurp: " (Surprends-moi, propose quelque chose de totalement différent)",
+                connErr: "Erreur de connexion avec l'Expert.",
+                historyEmpty: "Aucune dégustation enregistrée.",
+                quickButtons: [
+                    { label: "Débutant / Doux ☁️", val: "Je débute, je veux un cigare très doux et accessible." },
+                    { label: "Expert / Puissant 🔥", val: "Je suis un expert, je veux un cigare puissant et complexe." },
+                    { label: "Express (20min) ⏱️", val: "J'ai peu de temps, propose un petit format (20-30 min)." },
+                    { label: "Cubain Authentique 🇨🇺", val: "Je veux un pur havane, un classique cubain." },
+                    { label: "Budget Maîtrisé 💰", val: "Un bon rapport qualité/prix, pas trop cher." },
+                    { label: "Surprenez-moi 🎲", val: "Surprends-moi avec un cigare atypique ou méconnu." }
+                ]
+            },
+            en: {
+                pageTitle: "L'Aficionado - Cigar Expert",
+                demoBanner: "Demonstration",
+                subtitle: "Cigars & Spirits",
+                tagline: "The cigar, enjoyed with the elegance of knowledge.",
+                bubble: "What would you like today?",
+                expertBadge: "Private Expert",
+                searchPh: "Describe what you're looking for...",
+                mesEnvies: "My wishes",
+                buyCigar: "Find this cigar",
+                similar: "🔄 Similar",
+                surprise: "🎲 Surprise",
+                feedbackNo: "Not relevant",
+                feedbackYes: "Relevant",
+                footerQuote: "\"Smoking is a vice; appreciating it is an art.\"",
+                linkPres: "About",
+                linkAdmin: "Admin (Demo)",
+                footerLegal: "© 2026 L'Aficionado. ALL RIGHTS RESERVED <br>Smoking seriously harms your health.",
+                nosLink: "Our cigars",
+                nosTitle: "Our selection",
+                nosAsk: "Ask the expert",
+                nosLoad: "Loading…",
+                nosErr: "Could not load stock.",
+                nosEmpty: "No cigars in this category.",
+                enviesTitle: "Which cigar suits you?",
+                enviesSubmit: "Find my cigar",
+                enviesAlert: "Select at least one criterion.",
+                presTitle: "Boost your sales",
+                presLead: "L'Aficionado turns every visitor into a confident buyer. Offer <span class=\"font-bold\">24/7 expert advice</span> with no staff training.",
+                presLi1: "Higher average basket",
+                presLi2: "Guides beginners",
+                presLi3: "Premium customer experience",
+                presFoot: "We adapt to YOUR humidor",
+                analyzeImage: "Analyze this photo",
+                relSim: " (Suggest another similar but different reference)",
+                relSurp: " (Surprise me with something completely different)",
+                connErr: "Connection error with the Expert.",
+                historyEmpty: "No tastings saved.",
+                quickButtons: [
+                    { label: "Beginner / Mild ☁️", val: "I'm a beginner, I want a very mild, approachable cigar." },
+                    { label: "Expert / Full 🔥", val: "I'm an expert, I want a powerful, complex cigar." },
+                    { label: "Quick (20min) ⏱️", val: "I'm short on time, suggest a small format (20–30 min)." },
+                    { label: "Authentic Cuban 🇨🇺", val: "I want a true Havana, a Cuban classic." },
+                    { label: "Smart budget 💰", val: "Good value for money, not too expensive." },
+                    { label: "Surprise me 🎲", val: "Surprise me with an unusual or lesser-known cigar." }
+                ]
+            },
+            ru: {
+                pageTitle: "L'Aficionado — эксперт по сигарам",
+                demoBanner: "Демонстрация",
+                subtitle: "Сигары и крепкие напитки",
+                tagline: "Сигара — с элегантностью знания.",
+                bubble: "Чего вы желаете сегодня?",
+                expertBadge: "Личный эксперт",
+                searchPh: "Опишите ваше желание...",
+                mesEnvies: "Мои желания",
+                buyCigar: "Найти эту сигару",
+                similar: "🔄 Похожее",
+                surprise: "🎲 Сюрприз",
+                feedbackNo: "Не подходит",
+                feedbackYes: "Подходит",
+                footerQuote: "«Курение — порок; ценить его — искусство.»",
+                linkPres: "О продукте",
+                linkAdmin: "Админ (демо)",
+                footerLegal: "© 2026 L'Aficionado. ВСЕ ПРАВА ЗАЩИЩЕНЫ <br>Курение вредит вашему здоровью.",
+                nosLink: "Наши сигары",
+                nosTitle: "Наша подборка",
+                nosAsk: "Спросить эксперта",
+                nosLoad: "Загрузка…",
+                nosErr: "Не удалось загрузить склад.",
+                nosEmpty: "В этой категории нет сигар.",
+                enviesTitle: "Какая сигара вам подходит?",
+                enviesSubmit: "Подобрать сигару",
+                enviesAlert: "Выберите хотя бы один критерий.",
+                presTitle: "Увеличьте продажи",
+                presLead: "L'Aficionado превращает каждого посетителя в уверенного покупателя. Предложите <span class=\"font-bold\">экспертные советы 24/7</span> без обучения персонала.",
+                presLi1: "Рост среднего чека",
+                presLi2: "Помощь новичкам",
+                presLi3: "Премиальный сервис",
+                presFoot: "Подстраиваемся под ВАШу коллекцию",
+                analyzeImage: "Проанализируй это фото",
+                relSim: " (Предложи другую похожую, но другую позицию)",
+                relSurp: " (Удиви меня чем-то совсем другим)",
+                connErr: "Ошибка связи с экспертом.",
+                historyEmpty: "Нет сохранённых дегустаций.",
+                quickButtons: [
+                    { label: "Новичок / Мягкая ☁️", val: "Я новичок, хочу очень мягкую и доступную сигару." },
+                    { label: "Эксперт / Крепкая 🔥", val: "Я эксперт, хочу мощную и сложную сигару." },
+                    { label: "Быстро (20 мин) ⏱️", val: "Мало времени, предложи маленький формат (20–30 мин)." },
+                    { label: "Кубинская классика 🇨🇺", val: "Хочу настоящую гавану, классическую кубинскую." },
+                    { label: "Бюджет 💰", val: "Хорошее соотношение цена/качество, недорого." },
+                    { label: "Удиви меня 🎲", val: "Удиви необычной или малоизвестной сигарой." }
+                ]
+            }
+        };
+
+        function buildAskExpertQuestion(c) {
+            const name = c.nom;
+            const orig = c.origine;
+            if (currentLang === 'en') return `I'd like to know more about the cigar "${name}"${orig ? ` (${orig})` : ''}. Can you present it and tell me if it suits me?`;
+            if (currentLang === 'ru') return `Хочу узнать больше о сигаре «${name}»${orig ? ` (${orig})` : ''}. Расскажите о ней и подойдёт ли она мне?`;
+            return `Je souhaite en savoir plus sur le cigare « ${name} »${orig ? ' (' + orig + ')' : ''}. Peux-tu me le présenter et me dire s'il me convient ?`;
+        }
+
+        function isRefusalAnswer(text) {
+            if (!text) return false;
+            return [
+                "passion n'est que le cigare", "passion is solely the cigar", "страсть — только сигара",
+                "Sorry, my passion", "Извините, моя страсть"
+            ].some((n) => text.includes(n));
+        }
+
+        function applyUiLanguage() {
+            const u = getUi();
+            document.documentElement.lang = currentLang === 'en' ? 'en' : currentLang === 'ru' ? 'ru' : 'fr';
+            document.title = u.pageTitle;
+            const meta = document.querySelector('meta[name="description"]');
+            if (meta) meta.setAttribute('content', currentLang === 'fr' ? "L'Aficionado : Votre expert cigare personnel par IA." : currentLang === 'en' ? "L'Aficionado: your personal AI cigar expert." : "L'Aficionado — ваш персональный эксперт по сигарам с ИИ.");
+            document.getElementById('lang-menu-btn').textContent = FLAGS[currentLang] || FLAGS.fr;
+            document.getElementById('i18n-demo-banner').textContent = u.demoBanner;
+            document.getElementById('i18n-subtitle').textContent = u.subtitle;
+            document.getElementById('i18n-tagline').textContent = u.tagline;
+            document.getElementById('i18n-bubble').textContent = u.bubble;
+            document.getElementById('i18n-expert-badge').textContent = u.expertBadge;
+            input.placeholder = u.searchPh;
+            document.getElementById('photo-label').textContent = u.mesEnvies;
+            buyLink.textContent = u.buyCigar;
+            document.getElementById('i18n-btn-similar').textContent = u.similar;
+            document.getElementById('i18n-btn-surprise').textContent = u.surprise;
+            document.getElementById('btn-down').title = u.feedbackNo;
+            document.getElementById('btn-up').title = u.feedbackYes;
+            document.getElementById('i18n-footer-quote').textContent = u.footerQuote;
+            document.getElementById('i18n-link-pres').textContent = u.linkPres;
+            document.getElementById('i18n-link-admin').textContent = u.linkAdmin;
+            document.getElementById('i18n-footer-legal').innerHTML = u.footerLegal;
+            document.getElementById('i18n-nos-cigares-link').textContent = u.nosLink;
+            document.getElementById('i18n-nos-modal-title').textContent = u.nosTitle;
+            document.getElementById('nos-cigares-ask-btn').textContent = u.nosAsk;
+            document.getElementById('i18n-envies-title').textContent = u.enviesTitle;
+            document.getElementById('i18n-envies-submit').textContent = u.enviesSubmit;
+            document.getElementById('i18n-pres-title').textContent = u.presTitle;
+            document.getElementById('i18n-pres-lead').innerHTML = u.presLead;
+            document.getElementById('i18n-pres-li1').textContent = u.presLi1;
+            document.getElementById('i18n-pres-li2').textContent = u.presLi2;
+            document.getElementById('i18n-pres-li3').textContent = u.presLi3;
+            document.getElementById('i18n-pres-foot').textContent = u.presFoot;
+            renderQuickActions();
+            if (document.getElementById('nos-cigares-tabs').innerHTML) { renderNosCigaresTabs(); renderNosCigaresList(); }
+        }
+
+        function setLang(code) {
+            if (!UI[code]) return;
+            currentLang = code;
+            localStorage.setItem(LANG_STORE, code);
+            document.getElementById('lang-menu').classList.add('hidden');
+            applyUiLanguage();
+        }
+
+        function toggleLangMenu(ev) {
+            ev.stopPropagation();
+            document.getElementById('lang-menu').classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
+        document.querySelector('.lang-switch')?.addEventListener('click', (e) => e.stopPropagation());
 
         function renderQuickActions() {
             let html = "";
-            quickButtons.forEach(btn => {
+            getUi().quickButtons.forEach((btn) => {
                 html += `<button onclick="quickAction('${btn.val.replace(/'/g, "\\'")}')" class="tag-btn w-full">${btn.label}</button>`;
             });
             quickActions.className = "grid grid-cols-2 gap-2 mb-6 px-1 transition-opacity duration-300";
@@ -451,20 +656,68 @@
         const langData = {
             fr: {
                 phrases: ["Cigare pour débutant", "Un Cubain intense", "Pour accompagner un Rhum", "Cigare rapide (30min)"],
-                sections: { 
-                    '[DEMANDE]': 'Votre Demande', 
+                sections: {
+                    '[DEMANDE]': 'Votre Demande',
                     '[SUGGESTION]': 'Notre Suggestion',
-                    '[EXPLICATION]': "L'Explication", 
-                    '[AROMES]': "Les Arômes", 
+                    '[EXPLICATION]': "L'Explication",
+                    '[AROMES]': "Les Arômes",
                     '[DUREE]': 'Durée',
-                    '[PUISSANCE]': 'Puissance', 
+                    '[PUISSANCE]': 'Puissance',
                     '[MOMENT]': 'Le Moment Idéal',
-                    '[ACCORDS]': 'Accord Idéal', 
-                    '[PRIX]': 'Prix Estimé', 
-                    '[CONSEILS]': 'Les Conseils du Maitre' 
+                    '[ACCORDS]': 'Accord Idéal',
+                    '[PRIX]': 'Prix Estimé',
+                    '[CONSEILS]': 'Les Conseils du Maitre'
+                }
+            },
+            en: {
+                phrases: ["Cigar for a beginner", "A full-bodied Cuban", "To pair with rum", "Quick cigar (30 min)"],
+                sections: {
+                    '[DEMANDE]': 'Your request',
+                    '[SUGGESTION]': 'Our suggestion',
+                    '[EXPLICATION]': 'The explanation',
+                    '[AROMES]': 'Aromas',
+                    '[DUREE]': 'Duration',
+                    '[PUISSANCE]': 'Strength',
+                    '[MOMENT]': 'Ideal moment',
+                    '[ACCORDS]': 'Pairings',
+                    '[PRIX]': 'Estimated price',
+                    '[CONSEILS]': "The expert's word"
+                }
+            },
+            ru: {
+                phrases: ["Сигара для новичка", "Крепкая кубинская", "К рому", "Быстрая сигара (30 мин)"],
+                sections: {
+                    '[DEMANDE]': 'Ваш запрос',
+                    '[SUGGESTION]': 'Наша рекомендация',
+                    '[EXPLICATION]': 'Пояснение',
+                    '[AROMES]': 'Ароматы',
+                    '[DUREE]': 'Длительность',
+                    '[PUISSANCE]': 'Крепость',
+                    '[MOMENT]': 'Идеальный момент',
+                    '[ACCORDS]': 'Сочетания',
+                    '[PRIX]': 'Ориентировочная цена',
+                    '[CONSEILS]': 'Слово эксперта'
                 }
             }
         };
+
+        function getGoutTabs() {
+            const T = {
+                fr: [
+                    { id: 'tous', label: 'Tous' }, { id: 'doux', label: 'Doux' }, { id: 'equilibre', label: 'Équilibré' },
+                    { id: 'epice', label: 'Épicé' }, { id: 'bois', label: 'Bois / cuir' }, { id: 'cafe', label: 'Café / cacao' }, { id: 'floral', label: 'Floral' }
+                ],
+                en: [
+                    { id: 'tous', label: 'All' }, { id: 'doux', label: 'Mild' }, { id: 'equilibre', label: 'Balanced' },
+                    { id: 'epice', label: 'Spicy' }, { id: 'bois', label: 'Wood / leather' }, { id: 'cafe', label: 'Coffee / cocoa' }, { id: 'floral', label: 'Floral' }
+                ],
+                ru: [
+                    { id: 'tous', label: 'Все' }, { id: 'doux', label: 'Мягкая' }, { id: 'equilibre', label: 'Сбалансированная' },
+                    { id: 'epice', label: 'Пряная' }, { id: 'bois', label: 'Дерево / кожа' }, { id: 'cafe', label: 'Кофе / какао' }, { id: 'floral', label: 'Цветочная' }
+                ]
+            };
+            return T[currentLang] || T.fr;
+        }
 
         function toggleTheme() {
             document.body.classList.toggle('theme-cigar');
@@ -477,10 +730,85 @@
         function openEnviesModal() { document.getElementById('envies-modal').classList.remove('hidden'); }
         function closeEnviesModal() { document.getElementById('envies-modal').classList.add('hidden'); }
         function openPresentation() { document.getElementById('presentation-modal').classList.remove('hidden'); }
-        function openAdmin() { 
-            document.getElementById('admin-modal').classList.remove('hidden'); 
-            updateAdminTracker();
+        let nosCigaresStock = [];
+        let nosCigaresGout = 'tous';
+        let nosCigaresPick = null;
+
+        function openNosCigaresModal() {
+            document.getElementById('nos-cigares-modal').classList.remove('hidden');
+            document.getElementById('nos-cigares-detail').classList.add('hidden');
+            nosCigaresPick = null;
+            loadNosCigaresStock();
         }
+        function closeNosCigaresModal() {
+            document.getElementById('nos-cigares-modal').classList.add('hidden');
+        }
+        async function loadNosCigaresStock() {
+            const listEl = document.getElementById('nos-cigares-list');
+            listEl.innerHTML = `<p class="text-center text-[#8d6e63] text-sm py-6">${getUi().nosLoad}</p>`;
+            try {
+                const r = await fetch('/api/stock');
+                const data = await r.json();
+                nosCigaresStock = (data.items || []).slice().sort((a, b) => (a.nom || '').localeCompare(b.nom || '', 'fr', { sensitivity: 'base' }));
+                renderNosCigaresTabs();
+                renderNosCigaresList();
+            } catch (e) {
+                listEl.innerHTML = `<p class="text-center text-red-700 text-sm py-6">${getUi().nosErr}</p>`;
+            }
+        }
+        function renderNosCigaresTabs() {
+            const wrap = document.getElementById('nos-cigares-tabs');
+            wrap.innerHTML = getGoutTabs().map(t =>
+                `<button type="button" class="gout-tab ${nosCigaresGout === t.id ? 'active' : ''}" onclick="setNosCigaresGout('${t.id}')">${t.label}</button>`
+            ).join('');
+        }
+        function setNosCigaresGout(id) {
+            nosCigaresGout = id;
+            renderNosCigaresTabs();
+            renderNosCigaresList();
+        }
+        function renderNosCigaresList() {
+            const listEl = document.getElementById('nos-cigares-list');
+            const filtered = nosCigaresGout === 'tous' ? nosCigaresStock : nosCigaresStock.filter(c => (c.gout || 'equilibre') === nosCigaresGout);
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<p class="text-center text-[#8d6e63] text-sm py-6">${getUi().nosEmpty}</p>`;
+                return;
+            }
+            listEl.innerHTML = filtered.map(c => {
+                const sub = [c.origine, c.annee].filter(Boolean).join(' · ');
+                return `<button type="button" class="nos-cig-item w-full text-left px-3 py-2 rounded border border-[#3e2723]/20 bg-white hover:border-[#d4af37] transition-colors" data-id="${escapeHtml(c.id)}">
+                    <span class="font-serif font-semibold text-[#3e2723]">${escapeHtml(c.nom)}</span>
+                    ${sub ? `<span class="block text-xs text-[#8d6e63] mt-0.5">${escapeHtml(sub)}</span>` : ''}
+                </button>`;
+            }).join('');
+            listEl.querySelectorAll('.nos-cig-item').forEach(btn => {
+                btn.addEventListener('click', () => openNosCigarDetail(btn.getAttribute('data-id')));
+            });
+        }
+        function escapeHtml(s) {
+            if (!s) return '';
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function openNosCigarDetail(id) {
+            const c = nosCigaresStock.find(x => x.id === id);
+            if (!c) return;
+            nosCigaresPick = c;
+            document.getElementById('nos-cigares-detail').classList.remove('hidden');
+            document.getElementById('nos-cigares-detail-title').textContent = c.nom;
+            const text = (c.infoComplementaire || c.description || '').trim();
+            const meta = [c.origine, c.annee].filter(Boolean).join(' · ');
+            document.getElementById('nos-cigares-detail-text').innerHTML = escapeHtml(text + (meta ? '\n\n' + meta : '')).replace(/\n/g, '<br>');
+        }
+        function askExpertAboutCigar() {
+            if (!nosCigaresPick) return;
+            const q = buildAskExpertQuestion(nosCigaresPick);
+            closeNosCigaresModal();
+            input.value = q;
+            clearBtn.style.display = 'block';
+            demanderIA(null, null, null, 'nos_cigares');
+        }
+
+        function openAdmin() { window.location.href = '/admin'; }
 
         // --- ACCORDÉON LOGIQUE ---
         function toggleEnvieSection(header) {
@@ -527,8 +855,8 @@
             const accompagnement = document.querySelector('input[name="accompagnement"]:checked')?.value || "";
             const budget = document.querySelector('input[name="budget"]:checked')?.value || "";
 
-            if (!experience && !intention && profil.length === 0 && !style && !temps && !format && !accompagnement && !budget) { 
-                alert("Sélectionnez au moins un critère."); return; 
+            if (!experience && !intention && profil.length === 0 && !style && !temps && !format && !accompagnement && !budget) {
+                alert(getUi().enviesAlert); return;
             }
 
             let prompt = "Je cherche un cigare. Voici mon profil : ";
@@ -543,14 +871,7 @@
             
             closeEnviesModal();
             input.value = prompt; // Show for visual feedback
-            demanderIA();
-        }
-
-        function updateAdminTracker() {
-            const history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
-            const tracker = document.getElementById('admin-tracker');
-            if (history.length === 0) { tracker.innerHTML = "> En attente de requêtes..."; } 
-            else { tracker.innerHTML = history.map(h => `> [${h.date}] ${h.query.substring(0, 20)}...`).join('<br>'); }
+            demanderIA(null, null, null, 'mes_envies');
         }
 
         function resetUI() {
@@ -559,7 +880,7 @@
             setTimeout(() => { contentArea.innerHTML = ""; }, 500);
             allActionsContainer.classList.add('hidden'); feedbackContainer.classList.add('hidden');
             photoBtn.classList.remove('minimized');
-            document.getElementById('photo-label').innerText = "Mes Envies";
+            document.getElementById('photo-label').innerText = getUi().mesEnvies;
             currentSession = [];
             input.focus();
         }
@@ -567,23 +888,23 @@
         function clearInput() { input.value = ''; clearBtn.style.display = 'none'; input.focus(); }
         
         function relancerIA(type) {
+            const u = getUi();
             let complement = "";
-            if (type === 'similaire') complement = " (Propose une autre référence similaire mais différente)";
-            if (type === 'surprise') complement = " (Surprends-moi, propose quelque chose de totalement différent)";
+            if (type === 'similaire') complement = u.relSim;
+            if (type === 'surprise') complement = u.relSurp;
             demanderIA(null, null, complement);
         }
 
-        function quickAction(text) { input.value = text; clearBtn.style.display = 'block'; demanderIA(); }
+        function quickAction(text) { input.value = text; clearBtn.style.display = 'block'; demanderIA(null, null, null, 'flash'); }
         async function sendFeedback(vote) {
             if (vote === 'up') { document.getElementById('btn-up').style.opacity = '1'; document.getElementById('btn-down').style.display = 'none'; }
             else { document.getElementById('btn-down').style.opacity = '1'; document.getElementById('btn-up').style.display = 'none'; }
             try { await fetch('/feedback', { method: 'POST', body: JSON.stringify({ vote: vote }) }); } catch (e) {}
         }
         function toggleHistory() {
-            cavePanel.classList.add('hidden'); cavePanel.classList.remove('open'); 
             historyPanel.innerHTML = "";
             let history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
-            if (history.length === 0) { historyPanel.innerHTML = '<div class="p-3 italic text-center text-gray-400">Aucune dégustation enregistrée.</div>'; }
+            if (history.length === 0) { historyPanel.innerHTML = `<div class="p-3 italic text-center text-gray-400">${getUi().historyEmpty}</div>`; }
             else { history.forEach(item => { const div = document.createElement('div'); div.className = "history-item"; div.innerHTML = `<span class="text-[#d4af37]">🍂 ${item.cigar}</span><span class="text-xs text-gray-500">${item.date}</span>`; div.onclick = () => quickAction(item.query); historyPanel.appendChild(div); }); }
             if (historyPanel.classList.contains('hidden')) { historyPanel.classList.remove('hidden'); setTimeout(() => historyPanel.classList.add('open'), 10); }
             else { historyPanel.classList.remove('open'); setTimeout(() => historyPanel.classList.add('hidden'), 300); }
@@ -592,45 +913,6 @@
             let history = JSON.parse(localStorage.getItem('cigarHistory') || '[]');
             history.unshift({ query: query, cigar: suggestion, date: new Date().toLocaleDateString() });
             localStorage.setItem('cigarHistory', JSON.stringify(history.slice(0, 5)));
-        }
-
-        function toggleCave() {
-            historyPanel.classList.add('hidden'); historyPanel.classList.remove('open'); 
-            cavePanel.innerHTML = "";
-            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
-            
-            if (cave.length === 0) { 
-                cavePanel.innerHTML = '<div class="p-3 italic text-center text-gray-400">Votre cave est vide. Ajoutez des cigares !</div>'; 
-            } else { 
-                cave.forEach(cigar => { 
-                    const div = document.createElement('div'); 
-                    div.className = "history-item"; 
-                    div.innerHTML = `<span class="text-[#ffd700] font-bold">⭐ ${cigar}</span><span class="text-xs text-red-400 cursor-pointer" onclick="removeFromCave('${cigar.replace(/'/g, "\\'")}', event)">❌</span>`; 
-                    cavePanel.appendChild(div); 
-                }); 
-            }
-            if (cavePanel.classList.contains('hidden')) { cavePanel.classList.remove('hidden'); setTimeout(() => cavePanel.classList.add('open'), 10); }
-            else { cavePanel.classList.remove('open'); setTimeout(() => cavePanel.classList.add('hidden'), 300); }
-        }
-
-        function addToCave() {
-            if(!currentCigarName) return;
-            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
-            if(!cave.includes(currentCigarName)) {
-                cave.unshift(currentCigarName);
-                localStorage.setItem('myCigarCave', JSON.stringify(cave));
-                favBtn.innerHTML = "✅ Ajouté";
-                favBtn.classList.remove('bg-[#fffcf5]', 'text-[#d4af37]');
-                favBtn.classList.add('bg-[#d4af37]', 'text-black');
-            }
-        }
-
-        function removeFromCave(name, e) {
-            e.stopPropagation();
-            let cave = JSON.parse(localStorage.getItem('myCigarCave') || '[]');
-            cave = cave.filter(c => c !== name);
-            localStorage.setItem('myCigarCave', JSON.stringify(cave));
-            toggleCave(); toggleCave(); 
         }
 
         function generateFlames(score) {
@@ -644,37 +926,44 @@
             return html;
         }
 
-        async function demanderIA(evt, imageBase64 = null, overrideSuffix = null) {
-            let question = imageBase64 ? "Analyse cette photo" : input.value;
+        async function demanderIA(evt, imageBase64 = null, overrideSuffix = null, source = 'texte') {
+            const u = getUi();
+            let question = imageBase64 ? u.analyzeImage : input.value;
             if (overrideSuffix) question += overrideSuffix;
             if (!question) return;
 
-            quickActions.classList.add('hidden'); historyPanel.classList.add('hidden'); cavePanel.classList.add('hidden');
+            quickActions.classList.add('hidden'); historyPanel.classList.add('hidden');
             avatarCircle.classList.add('pulse-gold'); loader.classList.remove('hidden');
-            photoBtn.classList.add('minimized'); contentArea.innerHTML = ""; 
-            card.classList.remove('visible'); allActionsContainer.classList.add('hidden'); 
+            photoBtn.classList.add('minimized'); contentArea.innerHTML = "";
+            card.classList.remove('visible'); allActionsContainer.classList.add('hidden');
             feedbackContainer.classList.add('hidden');
-            favBtn.innerHTML = "⭐ Favoris"; favBtn.classList.add('bg-[#fffcf5]', 'text-[#d4af37]'); favBtn.classList.remove('bg-[#d4af37]', 'text-black');
 
             try {
                 const res = await fetch('/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: question, image: imageBase64, context: currentSession, client: clientName })
+                    body: JSON.stringify({
+                        question: question,
+                        image: imageBase64,
+                        context: currentSession,
+                        client: clientName,
+                        source: source || 'texte',
+                        lang: currentLang
+                    })
                 });
                 const data = await res.json();
-                
-                if (!imageBase64 && !data.answer.includes("[ERREUR]") && !data.answer.includes("passion n'est que le cigare")) {
+
+                if (!imageBase64 && !data.answer.includes("[ERREUR]") && !isRefusalAnswer(data.answer)) {
                     currentSession.push({ role: 'user', content: question });
                     currentSession.push({ role: 'assistant', content: data.answer });
                     if (currentSession.length > 6) currentSession = currentSession.slice(currentSession.length - 6);
                 }
 
-                avatarCircle.classList.remove('pulse-gold'); loader.classList.add('hidden'); 
-                document.getElementById('photo-label').innerText = "Mes Envies";
+                avatarCircle.classList.remove('pulse-gold'); loader.classList.add('hidden');
+                document.getElementById('photo-label').innerText = u.mesEnvies;
                 card.classList.add('visible');
 
-                const sections = langData.fr.sections;
+                const sections = (langData[currentLang] || langData.fr).sections;
                 let cigarFound = "";
                 let delay = 0;
 
@@ -729,7 +1018,7 @@
                                  cleanContent = content.replace(/[\[\]]/g, '').replace('mm', '').trim();
                                  cigarFound = cleanContent.split('\n')[0].replace(/\(.*\)/, '').replace(/N°\d\s*:\s*/, '').trim();
                                  currentCigarName = cigarFound;
-                                 formattedHTML = `<div class="text-xl md:text-2xl leading-relaxed whitespace-pre-line font-serif text-[#3e2723] font-bold">${cleanContent}</div>`;
+                                 formattedHTML = `<div class="text-base md:text-lg leading-relaxed whitespace-pre-line font-sans-serif-luxe text-[#3e2723] font-bold">${cleanContent}</div>`;
                              } else {
                                  formattedHTML = `<div class="text-base md:text-lg leading-relaxed whitespace-pre-line font-sans-serif-luxe text-[#3e2723] font-medium">${cleanContent}</div>`; 
                              }
@@ -757,14 +1046,14 @@
             } catch (e) {
                 console.error(e);
                 avatarCircle.classList.remove('pulse-gold'); loader.classList.add('hidden');
-                alert("Erreur de connexion avec l'Expert.");
+                alert(getUi().connErr);
             }
         }
 
         input.addEventListener('keypress', (e) => { if (e.key === 'Enter') demanderIA(); });
         let idx = 0;
         function typeWriter() {
-            let phrases = langData.fr.phrases;
+            let phrases = (langData[currentLang] || langData.fr).phrases;
             let p = phrases[idx % phrases.length], j = 0; input.placeholder = "";
             let t = setInterval(() => { input.placeholder += p[j++]; if (j === p.length) { clearInterval(t); setTimeout(erase, 1500); } }, 50);
         }
@@ -773,7 +1062,8 @@
             let t = setInterval(() => { input.placeholder = c.substring(0, c.length - 1); c = input.placeholder; if (c.length === 0) { clearInterval(t); idx++; setTimeout(typeWriter, 500); } }, 30);
         }
         
-        renderQuickActions();
+        currentLang = localStorage.getItem(LANG_STORE) || 'fr';
+        applyUiLanguage();
         typeWriter();
     </script>
 </body>

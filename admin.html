@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — L'Aficionado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍂</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap');
+        body { font-family: 'Playfair Display', serif; }
+        .gold-gradient { background: linear-gradient(to right, #d4af37, #fcf6ba, #b8860b, #fbf5b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Cinzel', serif; }
+        .gold-btn { background: linear-gradient(to bottom, #b8860b, #8a6e2f); box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid #ffd700; color: #fff; transition: all 0.3s ease; font-family: 'Cinzel', serif; letter-spacing: 0.05em; }
+        .gold-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5); }
+        .login-panel-left {
+            background: radial-gradient(ellipse at 30% 20%, rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(62, 39, 35, 0.6) 0%, transparent 45%),
+                linear-gradient(145deg, #1a0a06 0%, #0f0500 40%, #1c100c 100%);
+        }
+        .grain::after {
+            content: ''; position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        #login-stage { transition: opacity 0.55s ease, transform 0.65s cubic-bezier(0.4, 0, 0.2, 1); }
+        #login-stage.is-hidden { opacity: 0; transform: scale(0.98); pointer-events: none; position: absolute; inset: 0; z-index: 0; }
+        #dashboard-stage { opacity: 0; transition: opacity 0.6s ease 0.1s; }
+        #dashboard-stage.is-visible { opacity: 1; }
+        .admin-tab-btn { flex: 1; padding: 0.75rem; font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; background: #2a2a2a; color: #888; border-bottom: 2px solid transparent; }
+        .admin-tab-btn.active { color: #d4af37; border-bottom-color: #d4af37; background: #1a1a1a; }
+        .stat-bar { background: linear-gradient(to top, #b8860b, #d4af37); border-radius: 2px 2px 0 0; min-height: 4px; transition: height 0.3s ease; }
+        .input-luxe { background: rgba(0,0,0,0.45); border: 1px solid rgba(212, 175, 55, 0.25); color: #faf8f5; font-family: 'Montserrat', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-luxe:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2); }
+        .line-accent { height: 2px; width: 3rem; background: linear-gradient(90deg, #d4af37, transparent); }
+    </style>
+</head>
+<body class="min-h-screen bg-[#0a0604] text-gray-200 overflow-x-hidden relative">
+
+    <div id="login-stage" class="min-h-screen flex flex-col md:flex-row">
+        <div class="login-panel-left relative grain hidden md:flex md:w-[46%] flex-col justify-center items-start px-10 lg:px-16 py-16 border-r border-[#3e2723]/40">
+            <p class="text-[#d4af37]/70 text-xs tracking-[0.35em] uppercase font-[Montserrat] mb-4">Accès sécurisé</p>
+            <h1 class="text-4xl lg:text-5xl font-bold gold-gradient leading-tight">L'Aficionado</h1>
+            <div class="line-accent mt-6 mb-6"></div>
+            <p class="text-[#c4b5a0]/90 text-lg font-light max-w-md leading-relaxed">Tableau de bord : statistiques, stock et mise en avant des cigares.</p>
+            <p class="mt-10 text-[#8d6e63] text-sm font-[Montserrat] italic">« Fumer est un vice, l'apprécier est un art. »</p>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center px-6 py-14 md:py-10 relative">
+            <div class="md:hidden text-center mb-10">
+                <h1 class="text-3xl font-bold gold-gradient">L'Aficionado</h1>
+                <p class="text-[#d4af37]/60 text-xs tracking-[0.25em] uppercase mt-2 font-[Montserrat]">Administration</p>
+            </div>
+            <div class="w-full max-w-md rounded-xl border border-[#5d4037]/50 bg-[#120c0a]/90 backdrop-blur-sm p-8 shadow-[0_25px_80px_rgba(0,0,0,0.65)]">
+                <h2 class="font-[Montserrat] text-sm font-semibold text-[#d4af37] tracking-[0.2em] uppercase text-center mb-1">Connexion</h2>
+                <p class="text-center text-[#8d6e63] text-xs mb-8 font-[Montserrat]">Identifiant et mot de passe</p>
+                <form id="admin-login-form" class="space-y-5" autocomplete="on">
+                    <div>
+                        <label for="login-user" class="block text-[10px] uppercase tracking-widest text-[#a1887f] mb-2 font-[Montserrat]">Utilisateur</label>
+                        <input type="text" id="login-user" name="username" value="admin" class="input-luxe w-full rounded-lg px-4 py-3 text-sm" required>
+                    </div>
+                    <div>
+                        <label for="login-pass" class="block text-[10px] uppercase tracking-widest text-[#a1887f] mb-2 font-[Montserrat]">Mot de passe</label>
+                        <input type="password" id="login-pass" name="password" class="input-luxe w-full rounded-lg px-4 py-3 text-sm" required placeholder="••••••">
+                    </div>
+                    <p id="login-error" class="text-red-400 text-xs text-center hidden font-[Montserrat]">Identifiants incorrects</p>
+                    <button type="submit" id="login-submit" class="gold-btn w-full py-3.5 rounded-lg text-sm font-bold tracking-widest">Entrer</button>
+                </form>
+                <a href="/" class="block text-center mt-8 text-xs text-[#8d6e63] hover:text-[#d4af37] transition-colors font-[Montserrat]">← Retour au site</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-stage" class="hidden min-h-screen flex flex-col bg-[#0f0f0f]">
+        <header class="shrink-0 flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-[#5d4037]/60 bg-[#14100e]">
+            <span class="font-serif text-[#d4af37] tracking-[0.12em] text-sm md:text-base">L'Aficionado — Administration</span>
+            <button type="button" onclick="adminLogout()" class="text-xs text-[#d4af37]/80 hover:text-[#d4af37] uppercase tracking-wider font-[Montserrat]">Déconnexion</button>
+        </header>
+        <div class="flex flex-col flex-1 min-h-0 max-w-6xl w-full mx-auto">
+            <div class="flex border-b border-gray-800">
+                <button type="button" id="admin-tab-stats-btn" class="admin-tab-btn active" onclick="setAdminTab('stats')">Statistiques</button>
+                <button type="button" id="admin-tab-stock-btn" class="admin-tab-btn" onclick="setAdminTab('stock')">Stock</button>
+            </div>
+            <div id="admin-tab-stats" class="flex-1 overflow-y-auto p-4 space-y-6 text-left">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-[#111] p-3 rounded border border-gray-800">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-wider">Client conseillé</div>
+                        <div id="stat-conseille" class="text-2xl font-bold text-[#d4af37] mt-1">—</div>
+                        <div class="text-[10px] text-gray-600 mt-1">Total requêtes (toutes sources)</div>
+                    </div>
+                    <div class="bg-[#111] p-3 rounded border border-gray-800">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-wider">Client succès</div>
+                        <div id="stat-succes" class="mt-1">—</div>
+                    </div>
+                    <div class="bg-[#111] p-3 rounded border border-gray-800">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-wider">Client échec</div>
+                        <div id="stat-echec" class="mt-1">—</div>
+                    </div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                        <h3 class="text-xs uppercase text-[#d4af37] tracking-widest flex-1 min-w-[140px]">Tendance mensuelle</h3>
+                        <label class="text-[10px] text-gray-500 flex items-center gap-2">Année
+                            <select id="admin-chart-year" class="bg-black border border-gray-700 text-xs text-white rounded px-2 py-1"></select>
+                        </label>
+                    </div>
+                    <div id="admin-chart-bars" class="flex items-end justify-between gap-1 h-36 px-1 border-b border-gray-800 pb-1"></div>
+                    <div id="admin-chart-labels" class="flex justify-between gap-1 text-[9px] text-gray-500 mt-1 font-mono"></div>
+                </div>
+                <div class="bg-[#111] p-6 sm:p-8 rounded-lg border border-[#d4af37]/35 shadow-[0_0_0_1px_rgba(212,175,55,0.08)]">
+                    <p class="text-center text-xs uppercase tracking-[0.2em] text-[#d4af37] mb-5 font-[Montserrat] font-semibold">Période analysée <span class="text-gray-500 font-normal normal-case tracking-normal">(répartition, tops, mouchards…)</span></p>
+                    <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end justify-center gap-4 sm:gap-8 max-w-4xl mx-auto">
+                        <label class="flex flex-col items-center gap-2 flex-1 min-w-[min(100%,280px)] font-[Montserrat]">
+                            <span class="text-[11px] text-gray-400 uppercase tracking-wider text-center">Mois</span>
+                            <select id="admin-filter-month" class="admin-filter-select w-full bg-black border-2 border-[#5d4037] text-sm text-white rounded-lg px-4 py-3.5 min-h-[3.25rem] font-medium text-center cursor-pointer hover:border-[#d4af37]/60 focus:border-[#d4af37] focus:outline-none"></select>
+                        </label>
+                        <label class="flex flex-col items-center gap-2 flex-1 min-w-[min(100%,220px)] font-[Montserrat]">
+                            <span class="text-[11px] text-gray-400 uppercase tracking-wider text-center">Année</span>
+                            <select id="admin-filter-year" class="admin-filter-select w-full bg-black border-2 border-[#5d4037] text-sm text-white rounded-lg px-4 py-3.5 min-h-[3.25rem] font-medium text-center cursor-pointer hover:border-[#d4af37]/60 focus:border-[#d4af37] focus:outline-none"></select>
+                        </label>
+                        <div class="flex justify-center sm:items-end sm:pb-0.5">
+                            <button type="button" onclick="refreshAdminStats()" class="gold-btn px-8 py-3.5 rounded-lg text-xs font-bold uppercase tracking-widest w-full sm:w-auto min-w-[160px]">Actualiser</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <h3 class="text-xs uppercase text-[#d4af37] tracking-widest mb-3">Répartition des demandes</h3>
+                    <div id="stat-by-source" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm"></div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                        <h3 class="text-xs uppercase text-[#d4af37] tracking-widest">Top des demandes</h3>
+                        <select id="admin-top-n" class="bg-black border border-gray-700 text-xs text-white rounded px-2 py-1">
+                            <option value="3">Top 3</option>
+                            <option value="5">Top 5</option>
+                            <option value="10">Top 10</option>
+                        </select>
+                    </div>
+                    <div id="stat-top-queries" class="space-y-2 text-sm"></div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <h3 class="text-xs uppercase text-[#d4af37] tracking-widest mb-3">Répartition des résultats</h3>
+                    <div id="stat-by-result" class="space-y-2 text-sm max-h-48 overflow-y-auto"></div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <h3 class="text-xs uppercase text-[#d4af37] tracking-widest mb-3">Mouchard live</h3>
+                    <div id="stat-mouchard" class="text-xs font-mono bg-black p-3 rounded h-40 overflow-y-auto text-green-400/90 space-y-1"></div>
+                </div>
+                <div class="bg-[#111] p-4 rounded border border-gray-800">
+                    <h3 class="text-xs uppercase text-[#d4af37] tracking-widest mb-3">Mouchard error</h3>
+                    <div id="stat-mouchard-err" class="text-xs font-mono bg-black p-3 rounded h-36 overflow-y-auto text-red-400/90 space-y-1"></div>
+                </div>
+            </div>
+            <div id="admin-tab-stock" class="hidden flex-1 overflow-y-auto p-4 text-left space-y-4">
+                <p class="text-xs text-gray-500">Tri alphabétique · 3 étoiles maximum pour pousser à la suggestion IA</p>
+                <div id="admin-stock-list" class="space-y-2"></div>
+                <div class="border-t border-gray-700 pt-4 mt-4">
+                    <h3 class="text-xs uppercase text-[#d4af37] mb-3 tracking-widest">Ajouter un cigare</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input id="new-cigar-nom" placeholder="Nom du cigare *" class="bg-black border border-gray-700 text-sm text-white rounded px-2 py-2">
+                        <input id="new-cigar-annee" placeholder="Année (optionnel)" class="bg-black border border-gray-700 text-sm text-white rounded px-2 py-2">
+                        <input id="new-cigar-origine" placeholder="Origine (optionnel)" class="bg-black border border-gray-700 text-sm text-white rounded px-2 py-2">
+                        <select id="new-cigar-gout" class="bg-black border border-gray-700 text-sm text-white rounded px-2 py-2">
+                            <option value="doux">Doux</option>
+                            <option value="equilibre">Équilibré</option>
+                            <option value="epice">Épicé</option>
+                            <option value="bois">Bois / cuir</option>
+                            <option value="cafe">Café / cacao</option>
+                            <option value="floral">Floral</option>
+                        </select>
+                        <textarea id="new-cigar-info-complementaire" placeholder="Info complémentaire — aide l'IA à classer et décrire le cigare (optionnel)" rows="3" class="bg-black border border-gray-700 text-sm text-white rounded px-2 py-2 sm:col-span-2"></textarea>
+                    </div>
+                    <button type="button" onclick="adminAddCigar()" class="mt-3 w-14 h-14 rounded-full gold-btn text-2xl font-bold flex items-center justify-center mx-auto" title="Ajouter">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'aficionadoAdminKey';
+
+        function escapeHtml(s) {
+            if (!s) return '';
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function adminHeaders() {
+            return { 'X-Admin-Key': sessionStorage.getItem(STORAGE_KEY) || '', 'Content-Type': 'application/json' };
+        }
+
+        async function adminPing() {
+            try {
+                const r = await fetch('/api/admin/analytics?year=2026&month=0', { headers: { 'X-Admin-Key': sessionStorage.getItem(STORAGE_KEY) || '' } });
+                return r.ok;
+            } catch { return false; }
+        }
+
+        function showDashboard() {
+            document.getElementById('login-stage').classList.add('is-hidden');
+            const dash = document.getElementById('dashboard-stage');
+            dash.classList.remove('hidden');
+            requestAnimationFrame(() => dash.classList.add('is-visible'));
+            initAdminYearSelects();
+            setAdminTab('stats');
+            refreshAdminStats();
+            loadAdminStock();
+        }
+
+        function showLogin() {
+            const dash = document.getElementById('dashboard-stage');
+            dash.classList.remove('is-visible');
+            dash.classList.add('hidden');
+            document.getElementById('login-stage').classList.remove('is-hidden');
+            sessionStorage.removeItem(STORAGE_KEY);
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        function adminLogout() {
+            document.getElementById('login-pass').value = '';
+            showLogin();
+        }
+
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const err = document.getElementById('login-error');
+            const btn = document.getElementById('login-submit');
+            err.classList.add('hidden');
+            btn.disabled = true;
+            try {
+                const r = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('login-user').value.trim(),
+                        password: document.getElementById('login-pass').value
+                    })
+                });
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok || !data.key) {
+                    err.classList.remove('hidden');
+                    return;
+                }
+                sessionStorage.setItem(STORAGE_KEY, data.key);
+                showDashboard();
+            } catch {
+                err.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function tryResumeSession() {
+            if (!sessionStorage.getItem(STORAGE_KEY)) return;
+            if (await adminPing()) showDashboard();
+            else sessionStorage.removeItem(STORAGE_KEY);
+        }
+
+        function initAdminYearSelects() {
+            const chartY = document.getElementById('admin-chart-year');
+            const fy = document.getElementById('admin-filter-year');
+            const fm = document.getElementById('admin-filter-month');
+            if (!chartY || chartY.options.length) return;
+            let opts = '';
+            for (let y = 2026; y <= 2040; y++) opts += `<option value="${y}">${y}</option>`;
+            chartY.innerHTML = opts;
+            fy.innerHTML = opts;
+            const cur = new Date().getFullYear();
+            chartY.value = String(Math.min(2040, Math.max(2026, cur)));
+            fy.value = chartY.value;
+            const months = ['Toute l’année (filtre)', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            fm.innerHTML = months.map((label, i) => `<option value="${i}">${label}</option>`).join('');
+            fm.value = String(new Date().getMonth() + 1);
+        }
+
+        function setAdminTab(which) {
+            const statsBtn = document.getElementById('admin-tab-stats-btn');
+            const stockBtn = document.getElementById('admin-tab-stock-btn');
+            const statsEl = document.getElementById('admin-tab-stats');
+            const stockEl = document.getElementById('admin-tab-stock');
+            if (which === 'stats') {
+                statsBtn.classList.add('active'); stockBtn.classList.remove('active');
+                statsEl.classList.remove('hidden'); stockEl.classList.add('hidden');
+            } else {
+                stockBtn.classList.add('active'); statsBtn.classList.remove('active');
+                stockEl.classList.remove('hidden'); statsEl.classList.add('hidden');
+                loadAdminStock();
+            }
+        }
+
+        function fmtPct(n, d) {
+            if (!d || d <= 0) return '0';
+            const p = (100 * n) / d;
+            if (Math.abs(p - Math.round(p)) < 0.05) return String(Math.round(p));
+            return p.toFixed(1).replace(/\.0$/, '');
+        }
+
+        async function refreshAdminStats() {
+            initAdminYearSelects();
+            const chartYear = document.getElementById('admin-chart-year').value;
+            const filterYear = document.getElementById('admin-filter-year').value;
+            const month = document.getElementById('admin-filter-month').value;
+            const topN = parseInt(document.getElementById('admin-top-n').value, 10) || 3;
+            const url = `/api/admin/analytics?year=${encodeURIComponent(chartYear)}&month=${encodeURIComponent(month)}&filterYear=${encodeURIComponent(filterYear)}`;
+            try {
+                const r = await fetch(url, { headers: { 'X-Admin-Key': sessionStorage.getItem(STORAGE_KEY) || '' } });
+                if (!r.ok) return;
+                const d = await r.json();
+                const tot = d.totals.conseille || 0;
+                const succ = d.totals.succes || 0;
+                const echec = d.totals.echec || 0;
+                document.getElementById('stat-conseille').textContent = tot;
+                document.getElementById('stat-succes').innerHTML = tot
+                    ? `<div class="text-2xl font-bold text-emerald-400 leading-tight">${succ} <span class="text-lg font-semibold text-emerald-300/90">(${fmtPct(succ, tot)} %)</span></div><div class="text-[10px] text-gray-500 mt-1.5">du total « client conseillé »</div>`
+                    : `<div class="text-2xl font-bold text-emerald-400">0</div>`;
+                document.getElementById('stat-echec').innerHTML = tot
+                    ? `<div class="text-2xl font-bold text-red-400 leading-tight">${echec} <span class="text-lg font-semibold text-red-300/90">(${fmtPct(echec, tot)} %)</span></div><div class="text-[10px] text-gray-500 mt-1.5">du total « client conseillé »</div>`
+                    : `<div class="text-2xl font-bold text-red-400">0</div>`;
+                const maxC = Math.max(1, ...d.byMonth.map(x => x.count));
+                const bars = document.getElementById('admin-chart-bars');
+                const labels = document.getElementById('admin-chart-labels');
+                const moShort = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+                bars.innerHTML = d.byMonth.map((x, i) => {
+                    const h = Math.round((x.count / maxC) * 100);
+                    return `<div class="flex-1 flex flex-col items-center justify-end h-full"><div class="stat-bar w-full" style="height:${h}%"></div></div>`;
+                }).join('');
+                labels.innerHTML = d.byMonth.map((x, i) => `<div class="flex-1 text-center">${moShort[i]}</div>`).join('');
+                const src = d.bySource;
+                const srcKeys = [
+                    ['texte', 'Texte'],
+                    ['mes_envies', 'Mes envies'],
+                    ['flash', 'Bouton flash'],
+                    ['nos_cigares', 'Nos cigares'],
+                ];
+                const sumSrc = srcKeys.reduce((a, [k]) => a + (src[k] || 0), 0);
+                document.getElementById('stat-by-source').innerHTML = srcKeys
+                    .map(([k, lab]) => {
+                        const n = src[k] || 0;
+                        const pct = sumSrc ? fmtPct(n, sumSrc) : '0';
+                        return `<div class="bg-black/50 p-3 rounded border border-gray-800"><div class="text-[10px] text-gray-500 uppercase mb-1">${lab}</div><div class="text-lg text-white font-bold">${n} <span class="text-sm font-semibold text-[#d4af37]/90">(${pct} %)</span></div><div class="text-[9px] text-gray-600 mt-1">de la période filtrée</div></div>`;
+                    })
+                    .join('');
+                const tops = d.topQueriesSorted.slice(0, topN);
+                document.getElementById('stat-top-queries').innerHTML = tops.length ? tops.map((row, i) =>
+                    `<div class="flex justify-between gap-2 bg-black/40 p-2 rounded border border-gray-800"><span class="text-gray-300 truncate" title="${escapeHtml(row.query)}">${i + 1}. ${escapeHtml(row.query.substring(0, 120))}${row.query.length > 120 ? '…' : ''}</span><span class="text-[#d4af37] shrink-0">${row.count}</span></div>`
+                ).join('') : '<p class="text-gray-500 text-sm">Aucune donnée sur la période.</p>';
+                document.getElementById('stat-by-result').innerHTML = d.byResult.length ? d.byResult.map(row =>
+                    `<div class="flex justify-between gap-2 bg-black/40 p-2 rounded border border-gray-800"><span class="text-gray-300 truncate">${escapeHtml(row.suggestion)}</span><span class="text-[#d4af37] shrink-0">${row.count}</span></div>`
+                ).join('') : '<p class="text-gray-500 text-sm">Aucun résultat parsé.</p>';
+                document.getElementById('stat-mouchard').innerHTML = d.mouchard.length ? d.mouchard.map(l =>
+                    `<div class="border-b border-gray-900 pb-1">&gt; [${l.source}] ${escapeHtml(l.query)}</div>`
+                ).join('') : '<span class="text-gray-600">> Aucune requête.</span>';
+                document.getElementById('stat-mouchard-err').innerHTML = d.mouchardErrors.length ? d.mouchardErrors.map(l =>
+                    `<div class="border-b border-gray-900 pb-1">&gt; ${escapeHtml(l.error || '')} — <span class="text-gray-500">${escapeHtml(l.query || '')}</span></div>`
+                ).join('') : '<span class="text-gray-600">> Aucune erreur.</span>';
+            } catch (e) { console.error(e); }
+        }
+
+        let adminStockCache = [];
+        async function loadAdminStock() {
+            const el = document.getElementById('admin-stock-list');
+            el.innerHTML = '<p class="text-gray-500 text-sm">Chargement…</p>';
+            try {
+                const r = await fetch('/api/admin/stock', { headers: { 'X-Admin-Key': sessionStorage.getItem(STORAGE_KEY) || '' } });
+                if (!r.ok) throw new Error();
+                const d = await r.json();
+                adminStockCache = (d.items || []).slice().sort((a, b) => (a.nom || '').localeCompare(b.nom || '', 'fr', { sensitivity: 'base' }));
+                el.innerHTML = adminStockCache.map(c => {
+                    const star = c.featured ? '★' : '☆';
+                    const meta = [c.origine, c.annee].filter(Boolean).join(' · ');
+                    return `<div class="flex items-center gap-2 bg-black/40 border border-gray-800 rounded px-2 py-2 admin-stock-row" data-id="${escapeHtml(c.id)}">
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-white truncate">${escapeHtml(c.nom)}</div>
+                            <div class="text-[10px] text-gray-500 truncate">${escapeHtml(meta)} ${c.gout ? '· ' + escapeHtml(c.gout) : ''}</div>
+                        </div>
+                        <button type="button" class="admin-star-btn text-2xl text-[#d4af37] px-1 leading-none" title="Pousser (max 3)">${star}</button>
+                        <button type="button" class="admin-del-btn text-xs text-red-400 px-2 uppercase">Suppr</button>
+                    </div>`;
+                }).join('');
+                el.querySelectorAll('.admin-stock-row').forEach(row => {
+                    const id = row.getAttribute('data-id');
+                    row.querySelector('.admin-star-btn').addEventListener('click', () => adminToggleStar(id));
+                    row.querySelector('.admin-del-btn').addEventListener('click', () => adminDeleteCigar(id));
+                });
+                if (!adminStockCache.length) el.innerHTML = '<p class="text-gray-500 text-sm">Stock vide — ajoutez un cigare.</p>';
+            } catch {
+                el.innerHTML = '<p class="text-red-400 text-sm">Erreur de chargement.</p>';
+            }
+        }
+
+        async function adminToggleStar(id) {
+            try {
+                const r = await fetch('/api/admin/stock/toggle-feature', { method: 'POST', headers: adminHeaders(), body: JSON.stringify({ id }) });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) { alert(d.error || 'Action impossible'); return; }
+                loadAdminStock();
+            } catch { alert('Erreur réseau'); }
+        }
+
+        async function adminDeleteCigar(id) {
+            if (!confirm('Supprimer ce cigare du stock ?')) return;
+            try {
+                const r = await fetch('/api/admin/stock/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'X-Admin-Key': sessionStorage.getItem(STORAGE_KEY) || '' } });
+                if (!r.ok) return;
+                loadAdminStock();
+            } catch {}
+        }
+
+        async function adminAddCigar() {
+            const nom = document.getElementById('new-cigar-nom').value.trim();
+            if (!nom) { alert('Nom requis'); return; }
+            const body = {
+                nom,
+                annee: document.getElementById('new-cigar-annee').value.trim(),
+                origine: document.getElementById('new-cigar-origine').value.trim(),
+                infoComplementaire: document.getElementById('new-cigar-info-complementaire').value.trim(),
+                gout: document.getElementById('new-cigar-gout').value,
+            };
+            try {
+                const r = await fetch('/api/admin/stock', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(body) });
+                if (!r.ok) return;
+                document.getElementById('new-cigar-nom').value = '';
+                document.getElementById('new-cigar-annee').value = '';
+                document.getElementById('new-cigar-origine').value = '';
+                document.getElementById('new-cigar-info-complementaire').value = '';
+                loadAdminStock();
+            } catch {}
+        }
+
+        document.getElementById('admin-top-n').addEventListener('change', refreshAdminStats);
+        tryResumeSession();
+    </script>
+</body>
+</html>
